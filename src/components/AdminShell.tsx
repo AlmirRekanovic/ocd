@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { logoutAction } from "@/lib/actions/auth";
+import Logo from "./Logo";
 
 const NAV = [
   { href: "/admin", label: "Pregled", key: "dashboard" },
@@ -22,16 +23,9 @@ export default function AdminShell({
   return (
     <div className="min-h-screen md:flex">
       <aside className="border-b border-ink-700 bg-ink-900 md:w-60 md:shrink-0 md:border-b-0 md:border-r">
-        <div className="flex items-center gap-2 px-4 py-4">
-          <span className="grid h-8 w-8 place-items-center rounded bg-brand font-display text-sm font-black text-white">
-            OCD
-          </span>
-          <div>
-            <div className="font-display text-sm font-extrabold leading-tight">
-              OCD Fighters
-            </div>
-            <div className="text-xs text-zinc-500">Admin panel</div>
-          </div>
+        <div className="flex items-center gap-3 px-4 py-4">
+          <Logo className="h-9 w-auto" />
+          <div className="text-xs text-zinc-500">Admin panel</div>
         </div>
         <nav className="flex flex-wrap gap-1 px-2 pb-3 md:flex-col">
           {NAV.map((item) => (

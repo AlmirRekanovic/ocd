@@ -14,32 +14,32 @@ const dictionaries = {
       logout: "Odjava",
     },
     hero: {
-      kicker: "MMA Klub",
-      title: "OCD Fighters",
+      kicker: "Grappling & MMA · Sarajevo",
+      title: "OCD Fighters Sarajevo",
       subtitle:
-        "Discipline. Posvećenost. Borba. Treniraj sa nama i otkrij šta sve možeš postići.",
+        "Klub specijaliziran za grappling i MMA, osnovan 2026. u Sarajevu. Profesionalno, disciplinovano i ozbiljno sportsko okruženje za sve nivoe.",
       ctaJoin: "Postani član",
       ctaTraining: "Pogledaj treninge",
     },
     about: {
       title: "O klubu",
       body:
-        "OCD Fighters je MMA klub posvećen razvoju boraca svih nivoa — od početnika do takmičara. Naš pristup spaja tehniku, kondiciju i mentalnu snagu u sigurnom i podržavajućem okruženju.",
+        "OCD Fighters je klub specijaliziran za grappling i MMA, osnovan 2026. godine u Sarajevu, na adresi Nedžarići 7. Okupljamo sportiste koji žele trenirati u profesionalnom, disciplinovanom i ozbiljnom sportskom okruženju. Na čelu tima je glavni trener Namik Alibašić, nosilac crnog pojasa u brazilskoj jiu-jitsi, čije iskustvo, rezultati i posvećenost predstavljaju temelj rada kluba. Naša misija je izgradnja zajednice boraca koji kroz rad, disciplinu i međusobno poštovanje pomjeraju vlastite granice i ostvaruju vrhunske sportske rezultate.",
       points: [
-        { title: "Stručni treneri", text: "Iskusan trenerski tim koji prati svaki tvoj korak." },
-        { title: "Svi nivoi", text: "Programi prilagođeni početnicima i naprednim borcima." },
-        { title: "Zajednica", text: "Postani dio ekipe koja te gura naprijed." },
+        { title: "Glavni trener Namik Alibašić", text: "Nosilac crnog pojasa u brazilskoj jiu-jitsi — iskustvo, rezultati i posvećenost temelj su rada kluba." },
+        { title: "Programi za sve nivoe", text: "Posebni programi za početnike, napredne takmičare i profesionalne sportiste." },
+        { title: "Treninzi za žene", text: "Poseban program pod vodstvom trenerice Dalile, u privatnom okruženju, za sve nivoe iskustva." },
       ],
     },
     trainingSection: {
       title: "Treninzi",
       body:
-        "Grupni treninzi tokom cijele sedmice, plus mogućnost individualnih (privatnih) sesija. Članovi rezervišu termine direktno kroz članski portal.",
-      disciplines: ["MMA", "Boks", "Kickboks", "Hrvanje", "BJJ", "Kondicija"],
+        "Treninzi grapplinga i MMA prilagođeni svim nivoima — od početnika do profesionalnih takmičara. Moderno opremljena sala i vrhunski sportisti stvaraju sredinu u kojoj se svakodnevno razmjenjuju znanje, iskustvo i pobjednički mentalitet. Članovi rezervišu termine direktno kroz članski portal.",
+      disciplines: ["Grappling", "MMA", "BJJ", "Hrvanje", "Kondicija", "Treninzi za žene"],
     },
     contact: {
       title: "Kontakt",
-      body: "Prati nas i javi se putem Instagrama.",
+      body: "Nedžarići 7, Sarajevo. Prati nas i javi se putem Instagrama.",
       instagram: "Instagram",
     },
     footer: {
@@ -95,32 +95,32 @@ const dictionaries = {
       logout: "Logout",
     },
     hero: {
-      kicker: "MMA Club",
-      title: "OCD Fighters",
+      kicker: "Grappling & MMA · Sarajevo",
+      title: "OCD Fighters Sarajevo",
       subtitle:
-        "Discipline. Dedication. Fight. Train with us and discover what you are capable of.",
+        "A club specialised in grappling and MMA, founded in 2026 in Sarajevo. A professional, disciplined and serious training environment for all levels.",
       ctaJoin: "Become a member",
       ctaTraining: "See training",
     },
     about: {
       title: "About the club",
       body:
-        "OCD Fighters is an MMA club dedicated to developing fighters of all levels — from beginners to competitors. Our approach combines technique, conditioning and mental strength in a safe and supportive environment.",
+        "OCD Fighters is a club specialised in grappling and MMA, founded in 2026 in Sarajevo at Nedžarići 7. We bring together athletes who want to train in a professional, disciplined and serious sporting environment. The team is led by head coach Namik Alibašić, a Brazilian jiu-jitsu black belt whose experience, results and dedication form the foundation of the club. Our mission is to build a community of fighters who, through hard work, discipline and mutual respect, push their own limits and achieve top results.",
       points: [
-        { title: "Expert coaches", text: "An experienced coaching team that follows your every step." },
-        { title: "All levels", text: "Programs tailored to beginners and advanced fighters." },
-        { title: "Community", text: "Become part of a team that pushes you forward." },
+        { title: "Head coach Namik Alibašić", text: "A Brazilian jiu-jitsu black belt — his experience, results and dedication are the foundation of the club." },
+        { title: "Programs for all levels", text: "Dedicated programs for beginners, advanced competitors and professional athletes." },
+        { title: "Women's training", text: "A dedicated program led by coach Dalila, in a private setting, for all experience levels." },
       ],
     },
     trainingSection: {
       title: "Training",
       body:
-        "Group sessions throughout the week, plus the option of individual (private) sessions. Members book slots directly through the member portal.",
-      disciplines: ["MMA", "Boxing", "Kickboxing", "Wrestling", "BJJ", "Conditioning"],
+        "Grappling and MMA sessions tailored to all levels — from beginners to professional competitors. A modern, fully-equipped gym and elite athletes create an environment where knowledge, experience and a winning mindset are shared every day. Members book slots directly through the member portal.",
+      disciplines: ["Grappling", "MMA", "BJJ", "Wrestling", "Conditioning", "Women's training"],
     },
     contact: {
       title: "Contact",
-      body: "Follow us and reach out on Instagram.",
+      body: "Nedžarići 7, Sarajevo. Follow us and reach out on Instagram.",
       instagram: "Instagram",
     },
     footer: {

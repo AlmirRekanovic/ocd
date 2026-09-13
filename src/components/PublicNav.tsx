@@ -4,6 +4,7 @@ import { logoutAction } from "@/lib/actions/auth";
 import { getDictionary } from "@/i18n/dictionaries";
 import type { Locale } from "@/i18n/config";
 import LanguageSwitcher from "./LanguageSwitcher";
+import Logo from "./Logo";
 
 export default async function PublicNav({ locale }: { locale: Locale }) {
   const t = getDictionary(locale).nav;
@@ -12,13 +13,8 @@ export default async function PublicNav({ locale }: { locale: Locale }) {
   return (
     <header className="sticky top-0 z-40 border-b border-ink-700 bg-ink-900/90 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-        <Link href={`/${locale}`} className="flex items-center gap-2">
-          <span className="grid h-8 w-8 place-items-center rounded bg-brand font-display text-sm font-black text-white">
-            OCD
-          </span>
-          <span className="font-display text-lg font-extrabold tracking-tight">
-            OCD Fighters
-          </span>
+        <Link href={`/${locale}`} className="flex items-center">
+          <Logo className="h-10 w-auto" />
         </Link>
 
         <nav className="hidden items-center gap-6 text-sm font-medium text-zinc-300 md:flex">

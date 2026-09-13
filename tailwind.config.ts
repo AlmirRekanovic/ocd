@@ -5,17 +5,23 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // OCD Fighters brand palette: dark, aggressive, with a red accent.
+        // OCD Fighters brand palette: royal/azure blue + chrome silver on black,
+        // matching the club logo.
         brand: {
-          DEFAULT: "#e11d2a",
-          dark: "#b30f1b",
-          light: "#ff3b47",
+          DEFAULT: "#2e72e6",
+          dark: "#1b54bf",
+          light: "#6aa8ff",
+        },
+        steel: {
+          light: "#d7dce2",
+          DEFAULT: "#aab2bd",
+          dark: "#6b7280",
         },
         ink: {
-          900: "#0a0a0b",
-          800: "#141416",
-          700: "#1d1d20",
-          600: "#2a2a2e",
+          900: "#000000",
+          800: "#0c0e12",
+          700: "#171a20",
+          600: "#232830",
         },
       },
       fontFamily: {

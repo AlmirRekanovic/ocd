@@ -1,4 +1,4 @@
-import Database from "better-sqlite3";
+import Database from "libsql";
 import bcrypt from "bcryptjs";
 import fs from "node:fs";
 import path from "node:path";
@@ -9,18 +9,43 @@ declare global {
   var __ocdDb: Database.Database | undefined;
 }
 
-function resolveDbPath(): string {
+/**
+ * Opens the database connection.
+ *
+ * In production we talk to a hosted Turso (libSQL) database over the network,
+ * configured via `TURSO_DATABASE_URL` (+ `TURSO_AUTH_TOKEN`). Locally, with no
+ * such env var, we fall back to a plain SQLite file under `data/` so `npm run
+ * dev` works with zero setup. The query API (`prepare`/`get`/`all`/`run`) is
+ * identical in both modes, so the rest of the app is unchanged.
+ */
+function createConnection(): Database.Database {
+  const url = process.env.TURSO_DATABASE_URL;
+
+  if (url) {
+    const options = { authToken: process.env.TURSO_AUTH_TOKEN } as Database.Options;
+    const db = new Database(url, options);
+    // Best-effort; harmless if the remote ignores it.
+    try {
+      db.pragma("foreign_keys = ON");
+    } catch {
+      /* remote may not support per-connection pragmas */
+    }
+    return db;
+  }
+
   const configured = process.env.DATABASE_PATH;
-  if (configured) return configured;
-  const dir = path.join(process.cwd(), "data");
+  const file = configured || path.join(process.cwd(), "data", "ocd.db");
+  const dir = path.dirname(file);
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-  return path.join(dir, "ocd.db");
+
+  const db = new Database(file);
+  db.pragma("journal_mode = WAL");
+  db.pragma("foreign_keys = ON");
+  return db;
 }
 
 function init(): Database.Database {
-  const db = new Database(resolveDbPath());
-  db.pragma("journal_mode = WAL");
-  db.pragma("foreign_keys = ON");
+  const db = createConnection();
 
   db.exec(`
     CREATE TABLE IF NOT EXISTS users (

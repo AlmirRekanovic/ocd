@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { isLocale, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
 import PublicNav from "@/components/PublicNav";
+import Logo from "@/components/Logo";
 
 export const dynamic = "force-dynamic";
 
@@ -21,21 +22,20 @@ export default function LandingPage({ params }: { params: { locale: string } }) 
         {/* Hero */}
         <section className="relative overflow-hidden border-b border-ink-700">
           <div
-            className="absolute inset-0 opacity-20"
+            className="absolute inset-0 opacity-25"
             style={{
               backgroundImage:
-                "radial-gradient(circle at 20% 20%, rgba(225,29,42,0.45), transparent 45%), radial-gradient(circle at 80% 0%, rgba(225,29,42,0.25), transparent 40%)",
+                "radial-gradient(circle at 20% 20%, rgba(46,114,230,0.45), transparent 45%), radial-gradient(circle at 80% 0%, rgba(46,114,230,0.28), transparent 40%)",
             }}
           />
-          <div className="relative mx-auto max-w-6xl px-4 py-24 md:py-32">
-            <p className="mb-3 text-sm font-bold uppercase tracking-[0.25em] text-brand">
+          <div className="relative mx-auto flex max-w-6xl flex-col items-center px-4 py-24 text-center md:py-32">
+            <Logo className="mb-10 h-40 w-auto drop-shadow-[0_0_45px_rgba(46,114,230,0.45)] sm:h-52 md:h-64" />
+            <p className="mb-3 text-sm font-bold uppercase tracking-[0.25em] text-brand-light">
               {t.hero.kicker}
             </p>
-            <h1 className="font-display text-5xl font-black leading-none tracking-tight md:text-7xl">
-              {t.hero.title}
-            </h1>
-            <p className="mt-6 max-w-xl text-lg text-zinc-300">{t.hero.subtitle}</p>
-            <div className="mt-8 flex flex-wrap gap-3">
+            <h1 className="sr-only">{t.hero.title}</h1>
+            <p className="mt-2 max-w-xl text-lg text-zinc-300">{t.hero.subtitle}</p>
+            <div className="mt-8 flex flex-wrap justify-center gap-3">
               <Link href={`/${locale}/login`} className="btn-primary">
                 {t.hero.ctaJoin}
               </Link>

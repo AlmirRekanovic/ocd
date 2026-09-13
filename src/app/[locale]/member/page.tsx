@@ -9,6 +9,7 @@ import { getDb } from "@/lib/db";
 import { currentPeriod, dayOfWeek } from "@/lib/utils";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import PrivateRequestForm from "@/components/PrivateRequestForm";
+import Logo from "@/components/Logo";
 
 export const dynamic = "force-dynamic";
 
@@ -96,11 +97,8 @@ export default async function MemberPage({
     <div className="min-h-screen">
       <header className="border-b border-ink-700 bg-ink-900">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
-          <Link href={`/${locale}`} className="flex items-center gap-2">
-            <span className="grid h-8 w-8 place-items-center rounded bg-brand font-display text-sm font-black text-white">
-              OCD
-            </span>
-            <span className="font-display text-lg font-extrabold">OCD Fighters</span>
+          <Link href={`/${locale}`} className="flex items-center">
+            <Logo className="h-10 w-auto" />
           </Link>
           <div className="flex items-center gap-3">
             <LanguageSwitcher current={locale} />
