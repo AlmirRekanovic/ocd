@@ -3,10 +3,41 @@ import { addDays, daysBetween, todayISO } from "./dates";
 
 /** A payment covers this many days. */
 export const MEMBERSHIP_DAYS = 30;
-/** "Expiring soon" window, also when the first WhatsApp reminder goes out. */
+/** "Expiring soon" (orange) window: this many days or fewer until expiry. */
+export const WARN_DAYS_BEFORE = 7;
+/** When the first WhatsApp reminder goes out. */
 export const REMIND_DAYS_BEFORE = 3;
 
 export type MembershipState = "active" | "expiring" | "today" | "expired" | "never";
+
+/** Traffic-light color per state: paid = green, due within a week = orange, overdue/unpaid = red. */
+export type MembershipTone = "green" | "orange" | "red";
+
+export const MEMBERSHIP_TONE: Record<MembershipState, MembershipTone> = {
+  active: "green",
+  expiring: "orange",
+  today: "orange",
+  expired: "red",
+  never: "red",
+};
+
+export const TONE_BADGE: Record<MembershipTone, string> = {
+  green: "bg-emerald-500/15 text-emerald-400",
+  orange: "bg-orange-500/15 text-orange-400",
+  red: "bg-red-500/15 text-red-400",
+};
+
+export const TONE_TEXT: Record<MembershipTone, string> = {
+  green: "text-emerald-400",
+  orange: "text-orange-400",
+  red: "text-red-400",
+};
+
+export const TONE_BAR: Record<MembershipTone, string> = {
+  green: "border-l-emerald-500",
+  orange: "border-l-orange-500",
+  red: "border-l-red-500",
+};
 
 export interface Membership {
   last_paid_on: string | null;
@@ -33,7 +64,7 @@ export function membershipState(
       ? "expired"
       : daysLeft === 0
       ? "today"
-      : daysLeft <= REMIND_DAYS_BEFORE
+      : daysLeft <= WARN_DAYS_BEFORE
       ? "expiring"
       : "active";
   return { daysLeft, state };

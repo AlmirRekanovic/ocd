@@ -9,7 +9,12 @@ import { formatDateBs, formatDateTimeBs, todayISO } from "@/lib/dates";
 import {
   getMemberships,
   MEMBERSHIP_DAYS,
+  MEMBERSHIP_TONE,
   REMIND_DAYS_BEFORE,
+  TONE_BADGE,
+  TONE_BAR,
+  TONE_TEXT,
+  WARN_DAYS_BEFORE,
   type MemberMembership,
   type MembershipState,
 } from "@/lib/membership";
@@ -22,10 +27,10 @@ type Filter = "all" | MembershipState;
 const FILTERS: { key: Filter; label: string }[] = [
   { key: "all", label: "Svi" },
   { key: "today", label: "Ističu danas" },
-  { key: "expiring", label: `Ističu za ≤${REMIND_DAYS_BEFORE} dana` },
+  { key: "expiring", label: `Ističu za ≤${WARN_DAYS_BEFORE} dana` },
   { key: "expired", label: "Istekle" },
   { key: "never", label: "Nikad platili" },
-  { key: "active", label: "Aktivne" },
+  { key: "active", label: "Plaćeno" },
 ];
 
 // Most urgent first.
@@ -37,29 +42,23 @@ const URGENCY: Record<MembershipState, number> = {
   active: 4,
 };
 
-const BADGE = {
-  green: "bg-emerald-500/15 text-emerald-400",
-  amber: "bg-amber-500/15 text-amber-400",
-  red: "bg-brand/15 text-brand-light",
-};
-
 function dana(n: number): string {
   return n % 10 === 1 && n % 100 !== 11 ? "dan" : "dana";
 }
 
-function statusBadge(m: MemberMembership): { text: string; cls: string } {
+function statusText(m: MemberMembership): string {
   const d = m.daysLeft ?? 0;
   switch (m.state) {
     case "never":
-      return { text: "Nije plaćeno", cls: BADGE.red };
+      return "Nije plaćeno";
     case "expired":
-      return { text: `Istekla prije ${-d} ${dana(-d)}`, cls: BADGE.red };
+      return `Istekla prije ${-d} ${dana(-d)}`;
     case "today":
-      return { text: "Ističe danas", cls: BADGE.amber };
+      return "Ističe danas";
     case "expiring":
-      return { text: `Ističe za ${d} ${dana(d)}`, cls: BADGE.amber };
+      return `Ističe za ${d} ${dana(d)}`;
     default:
-      return { text: `Aktivna · još ${d} ${dana(d)}`, cls: BADGE.green };
+      return `Plaćeno · još ${d} ${dana(d)}`;
   }
 }
 
@@ -157,13 +156,13 @@ export default function AdminPaymentsPage({
         </div>
         <div className="mt-3 grid gap-3 text-sm sm:grid-cols-2">
           <div>
-            <p className="font-semibold text-amber-400">Ističe danas ({dueToday.length})</p>
+            <p className={`font-semibold ${TONE_TEXT.orange}`}>Ističe danas ({dueToday.length})</p>
             <p className="mt-1 text-zinc-300">
               {dueToday.length ? dueToday.map((m) => m.name).join(", ") : "Nikome."}
             </p>
           </div>
           <div>
-            <p className="font-semibold text-brand-light">Istekle ({overdue.length})</p>
+            <p className={`font-semibold ${TONE_TEXT.red}`}>Istekle ({overdue.length})</p>
             <p className="mt-1 text-zinc-300">
               {overdue.length ? overdue.map((m) => m.name).join(", ") : "Nema."}
             </p>
@@ -172,9 +171,9 @@ export default function AdminPaymentsPage({
 
         <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-ink-700 pt-4 text-sm">
           {remindersConfigured ? (
-            <span className={`badge ${BADGE.green}`}>WhatsApp podsjetnici uključeni</span>
+            <span className={`badge ${TONE_BADGE.green}`}>WhatsApp podsjetnici uključeni</span>
           ) : (
-            <span className={`badge ${BADGE.amber}`}>
+            <span className={`badge ${TONE_BADGE.orange}`}>
               WhatsApp podsjetnici nisu podešeni (nedostaju WHATSAPP_* postavke)
             </span>
           )}
@@ -222,22 +221,22 @@ export default function AdminPaymentsPage({
             </thead>
             <tbody className="divide-y divide-ink-700">
               {members.map((m) => {
-                const badge = statusBadge(m);
+                const tone = MEMBERSHIP_TONE[m.state];
                 return (
                   <tr key={m.id}>
-                    <td className="px-4 py-3">
+                    <td className={`border-l-4 px-4 py-3 ${TONE_BAR[tone]}`}>
                       <div className="font-medium">{m.name}</div>
                       <div className="text-xs text-zinc-500">{m.phone}</div>
                     </td>
                     <td className="px-4 py-3 text-zinc-300">
                       {m.last_paid_on ? formatDateBs(m.last_paid_on) : "—"}
                     </td>
-                    <td className="px-4 py-3 text-zinc-300">
+                    <td className={`px-4 py-3 font-semibold ${TONE_TEXT[tone]}`}>
                       {m.valid_until ? formatDateBs(m.valid_until) : "—"}
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex flex-wrap items-center gap-2">
-                        <span className={`badge ${badge.cls}`}>{badge.text}</span>
+                        <span className={`badge ${TONE_BADGE[tone]}`}>{statusText(m)}</span>
                         {m.state !== "active" && (
                           <a
                             href={whatsappLink(
@@ -389,9 +388,9 @@ export default function AdminPaymentsPage({
                     </td>
                     <td className="px-4 py-3">
                       {r.status === "sent" ? (
-                        <span className={`badge ${BADGE.green}`}>Poslano</span>
+                        <span className={`badge ${TONE_BADGE.green}`}>Poslano</span>
                       ) : (
-                        <span className={`badge ${BADGE.red}`} title={r.error || undefined}>
+                        <span className={`badge ${TONE_BADGE.red}`} title={r.error || undefined}>
                           Greška{r.error ? `: ${r.error.slice(0, 60)}` : ""}
                         </span>
                       )}

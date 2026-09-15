@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { getDb } from "@/lib/db";
 import { todayISO } from "@/lib/dates";
-import { getMemberships } from "@/lib/membership";
+import { getMemberships, TONE_TEXT, WARN_DAYS_BEFORE } from "@/lib/membership";
 import AdminShell from "@/components/AdminShell";
 
 export default function AdminDashboard() {
@@ -10,9 +10,9 @@ export default function AdminDashboard() {
 
   const memberships = getMemberships(today);
   const members = memberships.length;
-  const active = memberships.filter((m) => m.daysLeft !== null && m.daysLeft >= 0).length;
+  const paid = memberships.filter((m) => m.state === "active");
   const dueToday = memberships.filter((m) => m.state === "today");
-  const expiringSoon = memberships.filter((m) => m.state === "expiring");
+  const dueSoon = memberships.filter((m) => m.state === "expiring" || m.state === "today");
   const expired = memberships.filter((m) => m.state === "expired" || m.state === "never");
 
   const upcoming = (
@@ -27,12 +27,12 @@ export default function AdminDashboard() {
   ).c;
 
   const cards = [
-    { label: "Članova", value: members, href: "/admin/members" },
-    { label: "Aktivne članarine", value: `${active}/${members}`, href: "/admin/payments?filter=active" },
-    { label: "Ističu danas", value: dueToday.length, href: "/admin/payments?filter=today" },
-    { label: "Ističu uskoro", value: expiringSoon.length, href: "/admin/payments?filter=expiring" },
-    { label: "Nadolazećih treninga", value: upcoming, href: "/admin/schedule" },
-    { label: "Zahtjeva na čekanju", value: pending, href: "/admin/requests" },
+    { label: "Članova", value: members, href: "/admin/members", tone: "" },
+    { label: "Plaćeno", value: `${paid.length}/${members}`, href: "/admin/payments?filter=active", tone: TONE_TEXT.green },
+    { label: `Ističu u ${WARN_DAYS_BEFORE} dana`, value: dueSoon.length, href: "/admin/payments", tone: TONE_TEXT.orange },
+    { label: "Isteklo / neplaćeno", value: expired.length, href: "/admin/payments?filter=expired", tone: TONE_TEXT.red },
+    { label: "Nadolazećih treninga", value: upcoming, href: "/admin/schedule", tone: "" },
+    { label: "Zahtjeva na čekanju", value: pending, href: "/admin/requests", tone: "" },
   ];
 
   return (
@@ -40,18 +40,20 @@ export default function AdminDashboard() {
       {(dueToday.length > 0 || expired.length > 0) && (
         <Link
           href="/admin/payments"
-          className="card mb-6 block border-amber-500/40 transition-colors hover:border-brand"
+          className={`card mb-6 block transition-colors hover:border-brand ${
+            expired.length > 0 ? "border-red-500/50" : "border-orange-500/50"
+          }`}
         >
           <h2 className="font-display text-lg font-bold">Članarine — danas</h2>
           {dueToday.length > 0 && (
             <p className="mt-2 text-sm">
-              <span className="font-semibold text-amber-400">Ističe danas:</span>{" "}
+              <span className={`font-semibold ${TONE_TEXT.orange}`}>Ističe danas:</span>{" "}
               <span className="text-zinc-300">{dueToday.map((m) => m.name).join(", ")}</span>
             </p>
           )}
           {expired.length > 0 && (
             <p className="mt-1 text-sm">
-              <span className="font-semibold text-brand-light">Neplaćeno / isteklo:</span>{" "}
+              <span className={`font-semibold ${TONE_TEXT.red}`}>Neplaćeno / isteklo:</span>{" "}
               <span className="text-zinc-300">{expired.map((m) => m.name).join(", ")}</span>
             </p>
           )}
@@ -62,7 +64,7 @@ export default function AdminDashboard() {
         {cards.map((c) => (
           <Link key={c.label} href={c.href} className="card transition-colors hover:border-brand">
             <div className="text-sm text-zinc-400">{c.label}</div>
-            <div className="mt-2 font-display text-3xl font-extrabold">{c.value}</div>
+            <div className={`mt-2 font-display text-3xl font-extrabold ${c.tone}`}>{c.value}</div>
           </Link>
         ))}
       </div>

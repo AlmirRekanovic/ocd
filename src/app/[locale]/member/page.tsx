@@ -8,7 +8,7 @@ import { joinSlotAction, leaveSlotAction } from "@/lib/actions/slots";
 import { getDb } from "@/lib/db";
 import { dayOfWeek } from "@/lib/utils";
 import { formatDateBs, todayISO } from "@/lib/dates";
-import { getMembership } from "@/lib/membership";
+import { getMembership, MEMBERSHIP_TONE, TONE_BADGE } from "@/lib/membership";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import PrivateRequestForm from "@/components/PrivateRequestForm";
 import Logo from "@/components/Logo";
@@ -51,16 +51,16 @@ export default async function MemberPage({
   const db = getDb();
   const today = todayISO();
   const membership = getMembership(session.uid, today);
-  const membershipBadge =
-    membership.state === "active"
-      ? { text: m.paid, cls: "bg-emerald-500/15 text-emerald-400" }
-      : membership.state === "expiring"
-      ? { text: m.expiresSoon, cls: "bg-amber-500/15 text-amber-400" }
-      : membership.state === "today"
-      ? { text: m.expiresToday, cls: "bg-amber-500/15 text-amber-400" }
-      : membership.state === "expired"
-      ? { text: m.expired, cls: "bg-brand/15 text-brand-light" }
-      : { text: m.unpaid, cls: "bg-brand/15 text-brand-light" };
+  const membershipBadge = {
+    text: {
+      active: m.paid,
+      expiring: m.expiresSoon,
+      today: m.expiresToday,
+      expired: m.expired,
+      never: m.unpaid,
+    }[membership.state],
+    cls: TONE_BADGE[MEMBERSHIP_TONE[membership.state]],
+  };
 
   const slots = db
     .prepare(
