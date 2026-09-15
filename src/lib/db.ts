@@ -97,7 +97,57 @@ function init(): Database.Database {
       status     TEXT NOT NULL DEFAULT 'pending',
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
+
+    -- Every membership payment, kept as history. Replaces the old per-month
+    -- 'payments' table.
+    CREATE TABLE IF NOT EXISTS membership_payments (
+      id          INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id     INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      paid_on     TEXT NOT NULL,           -- 'YYYY-MM-DD' (Sarajevo)
+      valid_until TEXT NOT NULL,           -- 'YYYY-MM-DD'
+      amount      REAL,
+      note        TEXT,
+      created_by  INTEGER REFERENCES users(id) ON DELETE SET NULL,
+      created_at  TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_membership_payments_user
+      ON membership_payments(user_id, valid_until);
+
+    -- WhatsApp reminders, at most one per member / expiry date / kind.
+    CREATE TABLE IF NOT EXISTS membership_reminders (
+      id            INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id       INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      valid_until   TEXT NOT NULL,
+      kind          TEXT NOT NULL,         -- 'before' | 'due'
+      status        TEXT NOT NULL,         -- 'sent' | 'failed'
+      error         TEXT,
+      wa_message_id TEXT,
+      sent_at       TEXT NOT NULL DEFAULT (datetime('now')),
+      UNIQUE(user_id, valid_until, kind)
+    );
+
+    CREATE TABLE IF NOT EXISTS app_meta (
+      key   TEXT PRIMARY KEY,
+      value TEXT
+    );
   `);
+
+  // One-time migration: old monthly "paid" marks become dated payments
+  // (payment day = when it was marked, valid for 30 days from then).
+  if (!db.prepare("SELECT 1 FROM app_meta WHERE key = 'membership_payments_migrated'").get()) {
+    db.transaction(() => {
+      db.prepare(
+        `INSERT INTO membership_payments (user_id, paid_on, valid_until, note)
+         SELECT user_id, date(updated_at), date(updated_at, '+30 days'),
+                'Preneseno iz mjesečne evidencije (' || period || ')'
+           FROM payments WHERE status = 'paid'`
+      ).run();
+      db.prepare(
+        "INSERT OR IGNORE INTO app_meta (key, value) VALUES ('membership_payments_migrated', datetime('now'))"
+      ).run();
+    })();
+  }
 
   // Seed the initial admin (trainer) account.
   const adminUsername = process.env.ADMIN_USERNAME || "admin";

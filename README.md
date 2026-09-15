@@ -27,7 +27,13 @@ Web aplikacija za MMA klub **OCD Fighters** — javna (portfolio) stranica,
   - Lozinka je **broj telefona** člana.
   - Dugme **„Pošalji WhatsApp"** otvara WhatsApp sa već popunjenom porukom
     (korisničko ime + lozinka) — trener samo klikne pošalji. Besplatno.
-- **Članarine**: po mjesecu označi ko je platio, a ko nije.
+- **Članarine**: evidencija svake uplate sa tačnim datumom (i iznosom).
+  Članarina traje 30 dana od dana uplate (rana uplata se nadovezuje na
+  postojeći period). Svaki dan se vidi kome ističe danas, kome uskoro, a
+  kome je istekla, plus historija uplata po mjesecu.
+- **Automatski WhatsApp podsjetnici** (WhatsApp Business Cloud API): 3 dana
+  prije isteka i na dan isteka, ako član nije platio. Vidi
+  [Podsjetnici](#whatsapp-podsjetnici).
 - **Raspored**: pregled svih treninga, ko ih je kreirao i ko je prijavljen.
 - **Dodaj treninge**: pojedinačni trening ili **ponavljajući raspored** za duži
   period (npr. cijela godina) odabirom dana u sedmici.
@@ -35,7 +41,7 @@ Web aplikacija za MMA klub **OCD Fighters** — javna (portfolio) stranica,
 
 ## Tehnologije
 - [Next.js 14](https://nextjs.org/) (App Router, Server Actions)
-- SQLite preko [better-sqlite3](https://github.com/WiseLibs/better-sqlite3)
+- [libSQL](https://github.com/tursodatabase/libsql-js): hostovana Turso baza u produkciji, lokalno SQLite fajl
 - Autentikacija putem potpisanog JWT cookie-ja ([jose](https://github.com/panva/jose)),
   lozinke heširane sa bcrypt.
 - [Tailwind CSS](https://tailwindcss.com/)
@@ -66,6 +72,21 @@ Vidi [`.env.example`](./.env.example). Najvažnije:
 - `ADMIN_USERNAME` / `ADMIN_PASSWORD` — inicijalni trenerov nalog.
 - `DEFAULT_COUNTRY_CODE` — pozivni broj za WhatsApp linkove (BiH = `387`).
 - `DATABASE_PATH` — putanja do SQLite baze (zadano `./data/ocd.db`).
+
+## WhatsApp podsjetnici
+
+Vercel Cron (`vercel.json`) svaki dan u 07:00 UTC (08:00/09:00 u Sarajevu)
+poziva `/api/cron/reminders`, koji šalje odobrene WhatsApp šablone:
+
+| Šablon (env)               | Kada                 | Varijable                          |
+| -------------------------- | -------------------- | ---------------------------------- |
+| `WHATSAPP_TEMPLATE_BEFORE` | 3 dana prije isteka  | `{{1}}` ime, `{{2}}` datum isteka  |
+| `WHATSAPP_TEMPLATE_DUE`    | na dan isteka        | `{{1}}` ime, `{{2}}` datum isteka  |
+
+Svaki podsjetnik se šalje najviše jednom po periodu članarine (evidencija u
+tabeli `membership_reminders`, vidljiva na stranici Članarine). Dok
+`WHATSAPP_*` varijable nisu postavljene, ništa se ne šalje. Potrebne
+varijable su u [`.env.example`](./.env.example), uz `CRON_SECRET`.
 
 ## Produkcija
 

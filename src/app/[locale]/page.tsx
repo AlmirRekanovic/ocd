@@ -2,17 +2,35 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { isLocale, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
+import { CLUB, PRICES, type PlanKey } from "@/lib/club";
+import { todayISO } from "@/lib/dates";
+import { WEEK, type Level } from "@/lib/timetable";
+import { dayOfWeek } from "@/lib/utils";
+import { whatsappLink } from "@/lib/wa";
 import PublicNav from "@/components/PublicNav";
 import Logo from "@/components/Logo";
 
 export const dynamic = "force-dynamic";
 
-const INSTAGRAM = "https://www.instagram.com/ocdfighters.s/";
+const LEVEL_STYLE: Record<Level, string> = {
+  advanced: "bg-brand/15 text-brand-light",
+  beginner: "bg-emerald-500/15 text-emerald-400",
+  women: "bg-fuchsia-500/15 text-fuchsia-300",
+  all: "bg-amber-500/15 text-amber-400",
+};
 
 export default function LandingPage({ params }: { params: { locale: string } }) {
   if (!isLocale(params.locale)) notFound();
   const locale = params.locale as Locale;
   const t = getDictionary(locale);
+  const todayDow = dayOfWeek(todayISO());
+  const whatsappHref = whatsappLink(CLUB.coachPhone, t.contact.whatsappMessage, "387");
+
+  const highlights = [
+    { label: t.highlights.location, value: CLUB.address, href: "#location" },
+    { label: t.highlights.training, value: t.highlights.trainingValue, href: "#schedule" },
+    { label: t.highlights.coach, value: CLUB.coachPhoneDisplay, href: `tel:${CLUB.coachPhone}` },
+  ];
 
   return (
     <>
@@ -39,15 +57,35 @@ export default function LandingPage({ params }: { params: { locale: string } }) 
               <Link href={`/${locale}/login`} className="btn-primary">
                 {t.hero.ctaJoin}
               </Link>
-              <a href={`#training`} className="btn-ghost">
+              <a href="#schedule" className="btn-ghost">
                 {t.hero.ctaTraining}
               </a>
             </div>
           </div>
         </section>
 
+        {/* Key info strip */}
+        <section className="border-b border-ink-700 bg-ink-800/60">
+          <div className="mx-auto grid max-w-6xl divide-y divide-ink-700 px-4 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+            {highlights.map((h) => (
+              <a
+                key={h.label}
+                href={h.href}
+                className="group px-2 py-5 transition-colors sm:px-6"
+              >
+                <div className="text-xs font-bold uppercase tracking-widest text-zinc-500">
+                  {h.label}
+                </div>
+                <div className="mt-1 font-semibold text-zinc-100 group-hover:text-brand-light">
+                  {h.value}
+                </div>
+              </a>
+            ))}
+          </div>
+        </section>
+
         {/* About */}
-        <section id="about" className="mx-auto max-w-6xl px-4 py-20">
+        <section id="about" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-20">
           <h2 className="font-display text-3xl font-extrabold md:text-4xl">
             {t.about.title}
           </h2>
@@ -65,7 +103,7 @@ export default function LandingPage({ params }: { params: { locale: string } }) 
         </section>
 
         {/* Training */}
-        <section id="training" className="border-y border-ink-700 bg-ink-800/40">
+        <section id="training" className="scroll-mt-20 border-y border-ink-700 bg-ink-800/40">
           <div className="mx-auto max-w-6xl px-4 py-20">
             <h2 className="font-display text-3xl font-extrabold md:text-4xl">
               {t.trainingSection.title}
@@ -84,28 +122,248 @@ export default function LandingPage({ params }: { params: { locale: string } }) 
           </div>
         </section>
 
+        {/* Schedule */}
+        <section id="schedule" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-20">
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <h2 className="font-display text-3xl font-extrabold md:text-4xl">
+                {t.schedule.title}
+              </h2>
+              <p className="mt-4 max-w-2xl text-zinc-300">{t.schedule.subtitle}</p>
+            </div>
+            <a
+              href={whatsappHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-primary"
+            >
+              {t.schedule.cta}
+            </a>
+          </div>
+
+          <div className="mt-6 flex flex-wrap gap-2">
+            {(Object.keys(LEVEL_STYLE) as Level[]).map((level) => (
+              <span key={level} className={`badge ${LEVEL_STYLE[level]}`}>
+                {t.schedule.levels[level]}
+              </span>
+            ))}
+          </div>
+
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {WEEK.map(({ day, sessions }) => {
+              const isToday = day === todayDow;
+              return (
+                <div
+                  key={day}
+                  className={`card ${isToday ? "border-brand" : ""} ${
+                    sessions.length === 0 ? "opacity-60" : ""
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-display text-lg font-bold">{t.days[day]}</h3>
+                    {isToday && (
+                      <span className="badge bg-brand text-white">{t.schedule.today}</span>
+                    )}
+                  </div>
+                  {sessions.length === 0 ? (
+                    <p className="mt-3 text-sm text-zinc-500">{t.schedule.rest}</p>
+                  ) : (
+                    <ul className="mt-3 divide-y divide-ink-700">
+                      {sessions.map((s) => (
+                        <li key={s.start} className="flex items-start gap-3 py-2.5">
+                          <span className="w-[6.5rem] shrink-0 pt-0.5 font-mono text-sm text-brand-light">
+                            {s.start}–{s.end}
+                          </span>
+                          <div className="min-w-0">
+                            <div className="font-semibold">{t.schedule.classes[s.cls]}</div>
+                            <span className={`badge mt-1 ${LEVEL_STYLE[s.level]}`}>
+                              {t.schedule.levels[s.level]}
+                            </span>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* Pricing */}
+        <section id="pricing" className="scroll-mt-20 border-t border-ink-700 bg-ink-800/40">
+          <div className="mx-auto max-w-6xl px-4 py-20">
+            <h2 className="font-display text-3xl font-extrabold md:text-4xl">
+              {t.pricing.title}
+            </h2>
+            <p className="mt-4 max-w-2xl text-zinc-300">{t.pricing.subtitle}</p>
+
+            <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {(Object.keys(PRICES) as PlanKey[]).map((key) => {
+                const plan = t.pricing.plans[key];
+                const featured = key === "combo";
+                const saving = PRICES.grappling + PRICES.mma - PRICES.combo;
+                return (
+                  <div
+                    key={key}
+                    className={`card relative flex flex-col ${
+                      featured ? "border-brand shadow-[0_0_40px_rgba(46,114,230,0.25)]" : ""
+                    }`}
+                  >
+                    {featured && (
+                      <span className="badge absolute -top-3 left-5 bg-brand text-white">
+                        {t.pricing.bestValue}
+                      </span>
+                    )}
+                    <h3 className="font-display text-lg font-bold">{plan.name}</h3>
+                    <div className="mt-3 flex items-baseline gap-2">
+                      <span className="font-display text-4xl font-extrabold">{PRICES[key]}</span>
+                      <span className="text-lg font-bold text-zinc-300">KM</span>
+                    </div>
+                    <div className="text-sm text-zinc-500">
+                      {key === "dropIn" ? t.pricing.perSession : t.pricing.perMonth}
+                    </div>
+                    <p className="mt-4 flex-1 text-sm text-zinc-400">{plan.desc}</p>
+                    {featured && saving > 0 && (
+                      <p className="mt-3 text-sm font-semibold text-emerald-400">
+                        {t.pricing.save} {saving} KM
+                      </p>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            <a
+              href={whatsappHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-primary mt-8"
+            >
+              {t.pricing.cta}
+            </a>
+          </div>
+        </section>
+
+        {/* Location */}
+        <section id="location" className="scroll-mt-20 border-y border-ink-700">
+          <div className="mx-auto grid max-w-6xl gap-8 px-4 py-20 md:grid-cols-[1fr_1.4fr] md:items-center">
+            <div>
+              <h2 className="font-display text-3xl font-extrabold md:text-4xl">
+                {t.location.title}
+              </h2>
+              <p className="mt-4 text-zinc-300">{t.location.body}</p>
+              <p className="mt-6 text-xl font-bold">{CLUB.address}</p>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <a
+                  href={CLUB.directionsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-primary"
+                >
+                  {t.location.route}
+                </a>
+                <a
+                  href={CLUB.mapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-ghost"
+                >
+                  {t.location.openMaps}
+                </a>
+              </div>
+            </div>
+            <div className="overflow-hidden rounded-xl border border-ink-600 bg-ink-800">
+              <iframe
+                title={`${t.location.title}: ${CLUB.address}`}
+                src={CLUB.mapEmbedUrl}
+                className="block aspect-[4/3] w-full md:aspect-video"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                allowFullScreen
+              />
+            </div>
+          </div>
+        </section>
+
         {/* Contact */}
-        <section id="contact" className="mx-auto max-w-6xl px-4 py-20">
+        <section id="contact" className="scroll-mt-20 bg-ink-800/40">
+          <div className="mx-auto max-w-6xl px-4 py-20">
           <h2 className="font-display text-3xl font-extrabold md:text-4xl">
             {t.contact.title}
           </h2>
-          <p className="mt-4 text-zinc-300">{t.contact.body}</p>
-          <a
-            href={INSTAGRAM}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-primary mt-6"
-          >
-            {t.contact.instagram} @ocdfighters.s
-          </a>
+          <p className="mt-4 max-w-2xl text-zinc-300">{t.contact.body}</p>
+          <div className="mt-8 grid gap-4 sm:grid-cols-3">
+            <a
+              href={`tel:${CLUB.coachPhone}`}
+              className="card transition-colors hover:border-brand"
+            >
+              <div className="text-xs font-bold uppercase tracking-widest text-zinc-500">
+                {t.highlights.coach} · {t.contact.call}
+              </div>
+              <div className="mt-2 text-lg font-bold">{CLUB.coachPhoneDisplay}</div>
+            </a>
+            <a
+              href={whatsappHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="card transition-colors hover:border-emerald-500"
+            >
+              <div className="text-xs font-bold uppercase tracking-widest text-zinc-500">
+                {t.contact.whatsapp}
+              </div>
+              <div className="mt-2 text-lg font-bold text-emerald-400">
+                {t.contact.whatsappAction}
+              </div>
+            </a>
+            <a
+              href={CLUB.instagramUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="card transition-colors hover:border-brand"
+            >
+              <div className="text-xs font-bold uppercase tracking-widest text-zinc-500">
+                {t.contact.instagram}
+              </div>
+              <div className="mt-2 text-lg font-bold">{CLUB.instagramHandle}</div>
+            </a>
+          </div>
+          </div>
         </section>
       </main>
 
       <footer className="border-t border-ink-700 py-8">
-        <div className="mx-auto max-w-6xl px-4 text-sm text-zinc-500">
-          © {new Date().getFullYear()} OCD Fighters. {t.footer.rights}
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 text-sm text-zinc-500">
+          <span>
+            © {new Date().getFullYear()} OCD Fighters. {t.footer.rights}
+          </span>
+          <span className="flex flex-wrap gap-4">
+            <span>{CLUB.address}</span>
+            <a href={`tel:${CLUB.coachPhone}`} className="hover:text-zinc-300">
+              {CLUB.coachPhoneDisplay}
+            </a>
+            <a
+              href={CLUB.instagramUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-zinc-300"
+            >
+              {CLUB.instagramHandle}
+            </a>
+          </span>
         </div>
       </footer>
+
+      {/* Floating WhatsApp button */}
+      <a
+        href={whatsappHref}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={t.contact.whatsapp}
+        className="btn fixed bottom-5 right-5 z-50 rounded-full bg-[#25D366] px-5 py-3 text-black shadow-lg shadow-black/40 hover:bg-[#1ebe5b]"
+      >
+        {t.contact.whatsapp}
+      </a>
     </>
   );
 }

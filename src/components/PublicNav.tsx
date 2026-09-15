@@ -20,6 +20,9 @@ export default async function PublicNav({ locale }: { locale: Locale }) {
         <nav className="hidden items-center gap-6 text-sm font-medium text-zinc-300 md:flex">
           <a href={`/${locale}#about`} className="hover:text-white">{t.about}</a>
           <a href={`/${locale}#training`} className="hover:text-white">{t.training}</a>
+          <a href={`/${locale}#schedule`} className="hover:text-white">{t.schedule}</a>
+          <a href={`/${locale}#pricing`} className="hover:text-white">{t.pricing}</a>
+          <a href={`/${locale}#location`} className="hover:text-white">{t.location}</a>
           <a href={`/${locale}#contact`} className="hover:text-white">{t.contact}</a>
         </nav>
 

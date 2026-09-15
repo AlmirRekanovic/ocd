@@ -1,30 +1,20 @@
 import Link from "next/link";
 import { getDb } from "@/lib/db";
-import { currentPeriod } from "@/lib/utils";
+import { todayISO } from "@/lib/dates";
+import { getMemberships } from "@/lib/membership";
 import AdminShell from "@/components/AdminShell";
-
-function todayISO(): string {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
-    d.getDate()
-  ).padStart(2, "0")}`;
-}
 
 export default function AdminDashboard() {
   const db = getDb();
-  const period = currentPeriod();
   const today = todayISO();
 
-  const members = (
-    db.prepare("SELECT COUNT(*) AS c FROM users WHERE role = 'member'").get() as {
-      c: number;
-    }
-  ).c;
-  const paid = (
-    db
-      .prepare("SELECT COUNT(*) AS c FROM payments WHERE period = ? AND status = 'paid'")
-      .get(period) as { c: number }
-  ).c;
+  const memberships = getMemberships(today);
+  const members = memberships.length;
+  const active = memberships.filter((m) => m.daysLeft !== null && m.daysLeft >= 0).length;
+  const dueToday = memberships.filter((m) => m.state === "today");
+  const expiringSoon = memberships.filter((m) => m.state === "expiring");
+  const expired = memberships.filter((m) => m.state === "expired" || m.state === "never");
+
   const upcoming = (
     db.prepare("SELECT COUNT(*) AS c FROM training_slots WHERE date >= ?").get(today) as {
       c: number;
@@ -38,14 +28,37 @@ export default function AdminDashboard() {
 
   const cards = [
     { label: "Članova", value: members, href: "/admin/members" },
-    { label: `Platilo (${period})`, value: `${paid}/${members}`, href: "/admin/payments" },
+    { label: "Aktivne članarine", value: `${active}/${members}`, href: "/admin/payments?filter=active" },
+    { label: "Ističu danas", value: dueToday.length, href: "/admin/payments?filter=today" },
+    { label: "Ističu uskoro", value: expiringSoon.length, href: "/admin/payments?filter=expiring" },
     { label: "Nadolazećih treninga", value: upcoming, href: "/admin/schedule" },
     { label: "Zahtjeva na čekanju", value: pending, href: "/admin/requests" },
   ];
 
   return (
     <AdminShell active="dashboard" title="Pregled">
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {(dueToday.length > 0 || expired.length > 0) && (
+        <Link
+          href="/admin/payments"
+          className="card mb-6 block border-amber-500/40 transition-colors hover:border-brand"
+        >
+          <h2 className="font-display text-lg font-bold">Članarine — danas</h2>
+          {dueToday.length > 0 && (
+            <p className="mt-2 text-sm">
+              <span className="font-semibold text-amber-400">Ističe danas:</span>{" "}
+              <span className="text-zinc-300">{dueToday.map((m) => m.name).join(", ")}</span>
+            </p>
+          )}
+          {expired.length > 0 && (
+            <p className="mt-1 text-sm">
+              <span className="font-semibold text-brand-light">Neplaćeno / isteklo:</span>{" "}
+              <span className="text-zinc-300">{expired.map((m) => m.name).join(", ")}</span>
+            </p>
+          )}
+        </Link>
+      )}
+
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {cards.map((c) => (
           <Link key={c.label} href={c.href} className="card transition-colors hover:border-brand">
             <div className="text-sm text-zinc-400">{c.label}</div>

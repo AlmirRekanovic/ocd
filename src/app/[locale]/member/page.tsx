@@ -6,7 +6,9 @@ import { getSession } from "@/lib/auth";
 import { logoutAction } from "@/lib/actions/auth";
 import { joinSlotAction, leaveSlotAction } from "@/lib/actions/slots";
 import { getDb } from "@/lib/db";
-import { currentPeriod, dayOfWeek } from "@/lib/utils";
+import { dayOfWeek } from "@/lib/utils";
+import { formatDateBs, todayISO } from "@/lib/dates";
+import { getMembership } from "@/lib/membership";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import PrivateRequestForm from "@/components/PrivateRequestForm";
 import Logo from "@/components/Logo";
@@ -34,13 +36,6 @@ interface RequestRow {
   created_at: string;
 }
 
-function todayISO(): string {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
-    d.getDate()
-  ).padStart(2, "0")}`;
-}
-
 export default async function MemberPage({
   params,
 }: {
@@ -55,12 +50,17 @@ export default async function MemberPage({
   const m = t.member;
   const db = getDb();
   const today = todayISO();
-  const period = currentPeriod();
-
-  const payment = db
-    .prepare("SELECT status FROM payments WHERE user_id = ? AND period = ?")
-    .get(session.uid, period) as { status: string } | undefined;
-  const isPaid = payment?.status === "paid";
+  const membership = getMembership(session.uid, today);
+  const membershipBadge =
+    membership.state === "active"
+      ? { text: m.paid, cls: "bg-emerald-500/15 text-emerald-400" }
+      : membership.state === "expiring"
+      ? { text: m.expiresSoon, cls: "bg-amber-500/15 text-amber-400" }
+      : membership.state === "today"
+      ? { text: m.expiresToday, cls: "bg-amber-500/15 text-amber-400" }
+      : membership.state === "expired"
+      ? { text: m.expired, cls: "bg-brand/15 text-brand-light" }
+      : { text: m.unpaid, cls: "bg-brand/15 text-brand-light" };
 
   const slots = db
     .prepare(
@@ -116,17 +116,23 @@ export default async function MemberPage({
             <p className="text-sm text-zinc-400">{m.greeting}</p>
             <h1 className="font-display text-3xl font-extrabold">{session.name}</h1>
           </div>
-          <div className="card flex items-center gap-3 py-3">
-            <span className="text-sm text-zinc-400">
-              {m.paymentStatus} ({m.forMonth} {period})
-            </span>
-            <span
-              className={`badge ${
-                isPaid ? "bg-emerald-500/15 text-emerald-400" : "bg-brand/15 text-brand-light"
-              }`}
-            >
-              {isPaid ? m.paid : m.unpaid}
-            </span>
+          <div className="card py-3">
+            <div className="flex items-center gap-3">
+              <span className="text-sm text-zinc-400">{m.paymentStatus}</span>
+              <span className={`badge ${membershipBadge.cls}`}>{membershipBadge.text}</span>
+            </div>
+            {membership.valid_until && (
+              <p className="mt-1 text-xs text-zinc-500">
+                {membership.state === "expired" ? m.expiredOn : m.validUntil}:{" "}
+                <span className="text-zinc-300">{formatDateBs(membership.valid_until)}</span>
+                {membership.last_paid_on && (
+                  <>
+                    {" "}
+                    · {m.lastPaid}: {formatDateBs(membership.last_paid_on)}
+                  </>
+                )}
+              </p>
+            )}
           </div>
         </section>
 

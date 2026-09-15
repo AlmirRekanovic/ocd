@@ -24,6 +24,20 @@ export function credentialsMessage(
   );
 }
 
+/** Manual (click-to-send) membership reminder. `validUntil` is already formatted. */
+export function membershipReminderMessage(
+  name: string,
+  validUntil: string | null,
+  expired: boolean
+): string {
+  if (!validUntil) {
+    return `Zdravo ${name}! Podsjetnik iz OCD Fighters: članarina još nije uplaćena. Hvala!`;
+  }
+  return expired
+    ? `Zdravo ${name}! Podsjetnik iz OCD Fighters: tvoja članarina je istekla ${validUntil} Molimo te da je obnoviš. Hvala!`
+    : `Zdravo ${name}! Podsjetnik iz OCD Fighters: tvoja članarina ističe ${validUntil} Molimo te da je obnoviš na vrijeme. Hvala!`;
+}
+
 export function whatsappLink(
   phone: string,
   message: string,
