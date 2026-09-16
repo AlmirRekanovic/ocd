@@ -11,7 +11,7 @@ export interface ClassSession {
   level: Level;
 }
 
-const MON_WED: ClassSession[] = [
+const MON_WED_FRI: ClassSession[] = [
   { start: "09:30", end: "11:00", cls: "grapplingMma", level: "advanced" },
   { start: "16:45", end: "17:45", cls: "womenBjj", level: "women" },
   { start: "18:00", end: "19:45", cls: "grappling", level: "advanced" },
@@ -28,11 +28,11 @@ const SAT: ClassSession[] = [{ start: "10:00", end: "12:00", cls: "openMat", lev
 
 /** Monday-first week; `day` uses JS numbering (0 = Sunday). */
 export const WEEK: { day: number; sessions: ClassSession[] }[] = [
-  { day: 1, sessions: MON_WED },
+  { day: 1, sessions: MON_WED_FRI },
   { day: 2, sessions: TUE_THU },
-  { day: 3, sessions: MON_WED },
+  { day: 3, sessions: MON_WED_FRI },
   { day: 4, sessions: TUE_THU },
-  { day: 5, sessions: [] },
+  { day: 5, sessions: MON_WED_FRI },
   { day: 6, sessions: SAT },
   { day: 0, sessions: [] },
 ];
