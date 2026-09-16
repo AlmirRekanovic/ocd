@@ -34,5 +34,4 @@ export const WEEK: { day: number; sessions: ClassSession[] }[] = [
   { day: 4, sessions: TUE_THU },
   { day: 5, sessions: MON_WED_FRI },
   { day: 6, sessions: SAT },
-  { day: 0, sessions: [] },
 ];
