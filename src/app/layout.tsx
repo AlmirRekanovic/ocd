@@ -21,7 +21,6 @@ export const metadata: Metadata = {
     "Namik Alibašić",
     "treninzi za žene Sarajevo",
   ],
-  alternates: { canonical: "/" },
   icons: { icon: "/logo.png", apple: "/logo.png" },
   openGraph: {
     type: "website",
