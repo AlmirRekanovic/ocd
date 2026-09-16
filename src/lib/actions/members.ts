@@ -58,3 +58,54 @@ export async function deleteMemberAction(formData: FormData): Promise<void> {
   revalidatePath("/admin/members");
   revalidatePath("/admin/payments");
 }
+
+export interface UpdateMemberState {
+  error?: string;
+  saved?: { passwordReset: boolean };
+}
+
+export async function updateMemberAction(
+  _prev: UpdateMemberState,
+  formData: FormData
+): Promise<UpdateMemberState> {
+  await requireAdmin();
+  const db = getDb();
+
+  const id = Number(formData.get("id"));
+  const name = String(formData.get("name") || "").trim();
+  const phone = String(formData.get("phone") || "").trim();
+  const username = String(formData.get("username") || "").trim().toLowerCase();
+
+  if (!id) return { error: "Nepoznat član." };
+  if (!name || !phone || !username) {
+    return { error: "Ime, broj telefona i korisničko ime su obavezni." };
+  }
+  if (!/^[a-z0-9._-]+$/.test(username)) {
+    return { error: "Korisničko ime smije sadržavati samo mala slova, brojeve, tačku, crticu i donju crtu." };
+  }
+
+  const current = db
+    .prepare("SELECT phone FROM users WHERE id = ? AND role = 'member'")
+    .get(id) as { phone: string } | undefined;
+  if (!current) return { error: "Član ne postoji." };
+
+  if (db.prepare("SELECT 1 FROM users WHERE phone = ? AND id != ?").get(phone, id)) {
+    return { error: "Drugi član već ima ovaj broj telefona." };
+  }
+  if (db.prepare("SELECT 1 FROM users WHERE username = ? AND id != ?").get(username, id)) {
+    return { error: "Korisničko ime je već zauzeto." };
+  }
+
+  // The password is the member's phone number, so a new phone means a new password.
+  const passwordReset = phone !== current.phone;
+  if (passwordReset) {
+    db.prepare(
+      "UPDATE users SET name = ?, phone = ?, username = ?, password_hash = ? WHERE id = ?"
+    ).run(name, phone, username, bcrypt.hashSync(phone, 10), id);
+  } else {
+    db.prepare("UPDATE users SET name = ?, username = ? WHERE id = ?").run(name, username, id);
+  }
+
+  revalidatePath("/admin", "layout");
+  return { saved: { passwordReset } };
+}

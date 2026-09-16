@@ -2,6 +2,7 @@ import { getDb } from "@/lib/db";
 import { deleteMemberAction } from "@/lib/actions/members";
 import AdminShell from "@/components/AdminShell";
 import CreateMemberForm from "@/components/CreateMemberForm";
+import EditMemberButton from "@/components/EditMemberButton";
 import WhatsAppCredsButton from "@/components/WhatsAppCredsButton";
 
 interface MemberRow {
@@ -58,6 +59,9 @@ export default function AdminMembersPage() {
                     <td className="px-4 py-3 text-zinc-300">{m.phone}</td>
                     <td className="px-4 py-3">
                       <div className="flex flex-wrap gap-2">
+                        <EditMemberButton
+                          member={{ id: m.id, name: m.name, phone: m.phone, username: m.username }}
+                        />
                         <WhatsAppCredsButton
                           name={m.name}
                           username={m.username}
