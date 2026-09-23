@@ -10,26 +10,11 @@
 // the club actually teaches. That wording legitimately reaches people
 // searching for boxing without claiming a standalone boxing program.
 
-import type { Locale } from "./config";
+import type { PageContent } from "../pages";
 
-export const disciplineKeys = ["mma", "grappling", "bjj", "women", "beginners"] as const;
-export type DisciplineKey = (typeof disciplineKeys)[number];
+export type DisciplineKey = "mma" | "grappling" | "bjj" | "women" | "beginners";
 
-export interface DisciplineContent {
-  slug: string;
-  navLabel: string;
-  metaTitle: string;
-  metaDescription: string;
-  keywords: string[];
-  h1: string;
-  lede: string;
-  sections: { title: string; body: string }[];
-  faq: { q: string; a: string }[];
-  ctaTitle: string;
-  ctaBody: string;
-}
-
-const bs: Record<DisciplineKey, DisciplineContent> = {
+export const bs: Record<DisciplineKey, PageContent> = {
   mma: {
     slug: "mma-sarajevo",
     navLabel: "MMA",
@@ -365,7 +350,7 @@ const bs: Record<DisciplineKey, DisciplineContent> = {
   },
 };
 
-const en: Record<DisciplineKey, DisciplineContent> = {
+export const en: Record<DisciplineKey, PageContent> = {
   mma: {
     slug: "mma-sarajevo",
     navLabel: "MMA",
@@ -682,23 +667,3 @@ const en: Record<DisciplineKey, DisciplineContent> = {
       "The first visit is the only hard part. Message the coach on WhatsApp and arrange a time — the rest takes care of itself.",
   },
 };
-
-const content: Record<Locale, Record<DisciplineKey, DisciplineContent>> = { bs, en };
-
-export function getDiscipline(locale: Locale, key: DisciplineKey): DisciplineContent {
-  return content[locale][key];
-}
-
-export function getDisciplines(locale: Locale): DisciplineContent[] {
-  return disciplineKeys.map((key) => content[locale][key]);
-}
-
-/** Resolve a URL slug back to its discipline key, for the dynamic route. */
-export function disciplineBySlug(locale: Locale, slug: string): DisciplineKey | null {
-  return disciplineKeys.find((key) => content[locale][key].slug === slug) ?? null;
-}
-
-/** The matching slug in the other language, so the language switcher works. */
-export function slugForLocale(key: DisciplineKey, locale: Locale): string {
-  return content[locale][key].slug;
-}

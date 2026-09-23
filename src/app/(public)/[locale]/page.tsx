@@ -7,7 +7,7 @@ import { todayISO } from "@/lib/dates";
 import { WEEK, type Level } from "@/lib/timetable";
 import { dayOfWeek } from "@/lib/utils";
 import { whatsappLink } from "@/lib/wa";
-import { getDisciplines } from "@/i18n/disciplines";
+import { getNavPages } from "@/i18n/pages";
 import { clubJsonLd, faqJsonLd, websiteJsonLd } from "@/lib/seo";
 import PublicNav from "@/components/PublicNav";
 import PublicFooter from "@/components/PublicFooter";
@@ -33,7 +33,7 @@ export default function LandingPage({ params }: { params: { locale: string } }) 
   const t = getDictionary(locale);
   const todayDow = dayOfWeek(todayISO());
   const whatsappHref = whatsappLink(CLUB.coachPhone, t.contact.whatsappMessage, "387");
-  const disciplines = getDisciplines(locale);
+  const disciplines = getNavPages(locale);
 
   const highlights = [
     { label: t.highlights.location, value: CLUB.address, href: "#location" },

@@ -1,19 +1,19 @@
 import Link from "next/link";
 import { CLUB } from "@/lib/club";
 import { getDictionary } from "@/i18n/dictionaries";
-import { getDisciplines } from "@/i18n/disciplines";
+import { getPages } from "@/i18n/pages";
 import type { Locale } from "@/i18n/config";
 
 /**
  * Site-wide footer.
  *
- * The discipline links here are deliberate: every page linking to every other
+ * The page links here are deliberate: every page linking to every other
  * page is what lets search engines discover and re-crawl the sub-pages, and it
  * spreads authority from the (most-linked) home page across them.
  */
 export default function PublicFooter({ locale }: { locale: Locale }) {
   const t = getDictionary(locale);
-  const disciplines = getDisciplines(locale);
+  const disciplines = getPages(locale);
 
   return (
     <footer className="border-t border-ink-700 bg-ink-900">

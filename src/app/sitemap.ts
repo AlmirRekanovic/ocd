@@ -1,13 +1,13 @@
 import type { MetadataRoute } from "next";
 import { locales } from "@/i18n/config";
-import { disciplineKeys, slugForLocale } from "@/i18n/disciplines";
+import { pageKeys, slugForLocale } from "@/i18n/pages";
 import { SITE_URL } from "@/lib/seo";
 
 /**
  * Sitemap for the public site.
  *
- * Built from the same locale and discipline definitions the routes use, so a
- * new discipline page appears here automatically rather than being silently
+ * Built from the same locale and page definitions the routes use, so a
+ * new page appears here automatically rather than being silently
  * left out — an unlisted page is a page that may never get crawled.
  *
  * Each entry declares its translations via `alternates.languages`, which is
@@ -27,8 +27,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   }));
 
-  const disciplinePages = locales.flatMap((locale) =>
-    disciplineKeys.map((key) => ({
+  const contentPages = locales.flatMap((locale) =>
+    pageKeys.map((key) => ({
       url: `${SITE_URL}/${locale}/${slugForLocale(key, locale)}`,
       lastModified: now,
       changeFrequency: "monthly" as const,
@@ -41,5 +41,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     })),
   );
 
-  return [...homes, ...disciplinePages];
+  return [...homes, ...contentPages];
 }

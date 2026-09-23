@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getDictionary } from "@/i18n/dictionaries";
-import { getDisciplines } from "@/i18n/disciplines";
+import { getNavPages } from "@/i18n/pages";
 import type { Locale } from "@/i18n/config";
 import LanguageSwitcher from "./LanguageSwitcher";
 import NavAuth from "./NavAuth";
@@ -21,7 +21,7 @@ export default function PublicNav({
   hrefs?: Partial<Record<Locale, string>>;
 }) {
   const t = getDictionary(locale).nav;
-  const disciplines = getDisciplines(locale);
+  const disciplines = getNavPages(locale);
 
   return (
     <header className="sticky top-0 z-40 border-b border-ink-700 bg-ink-900/90 backdrop-blur">

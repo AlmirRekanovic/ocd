@@ -15,7 +15,15 @@ import { CLUB, LAT, LNG, PRICES } from "@/lib/club";
 import { WEEK } from "@/lib/timetable";
 import type { Locale } from "@/i18n/config";
 
-export const SITE_URL = "https://ocdmma.ba";
+/**
+ * The canonical origin — note the `www`.
+ *
+ * The apex domain 308-redirects to www in production, so every canonical tag,
+ * hreflang, sitemap entry and og:url has to use www. Pointing them at the
+ * apex made each one resolve through a redirect, which muddies exactly the
+ * signal a canonical tag exists to send.
+ */
+export const SITE_URL = "https://www.ocdmma.ba";
 
 /** Schema.org day names, indexed by JS day number (0 = Sunday). */
 const SCHEMA_DAYS = [
