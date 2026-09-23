@@ -19,6 +19,10 @@ const dictionaries = {
     hero: {
       kicker: "Grappling & MMA · Sarajevo",
       title: "OCD Fighters Sarajevo",
+      // The visible <h1>. It leads with what the club *is* and where, because
+      // that is the phrase people actually search — the brand name is carried
+      // by the logo directly above it.
+      h1: "MMA i grappling klub u Sarajevu",
       subtitle:
         "Klub specijaliziran za grappling i MMA, osnovan 2026. u Sarajevu. Profesionalno, disciplinovano i ozbiljno sportsko okruženje za sve nivoe.",
       ctaJoin: "Postani član",
@@ -39,6 +43,7 @@ const dictionaries = {
       body:
         "Treninzi grapplinga i MMA prilagođeni svim nivoima — od početnika do profesionalnih takmičara. Moderno opremljena sala i vrhunski sportisti stvaraju sredinu u kojoj se svakodnevno razmjenjuju znanje, iskustvo i pobjednički mentalitet. Članovi rezervišu termine direktno kroz članski portal.",
       disciplines: ["Grappling", "MMA", "BJJ", "Hrvanje", "Kondicija", "Treninzi za žene"],
+      more: "Saznaj više",
     },
     highlights: {
       location: "Lokacija",
@@ -99,6 +104,63 @@ const dictionaries = {
     },
     footer: {
       rights: "Sva prava zadržana.",
+      programs: "Programi",
+      club: "Klub",
+    },
+    faq: {
+      title: "Česta pitanja",
+      otherPrograms: "Ostali programi",
+    },
+    // Homepage FAQ. These are the questions people actually type into Google
+    // as full sentences ("gdje trenirati MMA u Sarajevu", "koliko košta
+    // članarina") — answering them verbatim on the page is what makes the
+    // page eligible for those results.
+    homeFaq: [
+      {
+        q: "Gdje trenirati MMA i grappling u Sarajevu?",
+        a: "OCD Fighters se nalazi na adresi Nedžarići 7 u Sarajevu. Treniramo MMA, grappling i brazilsku jiu-jitsu, u grupama za početnike i napredne, jutarnjim i večernjim terminima od ponedjeljka do subote.",
+      },
+      {
+        q: "Koliko košta članarina u borilačkom klubu u Sarajevu?",
+        a: "Kod nas je mjesečna članarina 70 KM za jedan program (MMA ili grappling), 100 KM za oba programa zajedno, a pojedinačni trening bez članarine je 15 KM. Prvi trening je besplatan.",
+      },
+      {
+        q: "Mogu li početi bez ikakvog iskustva?",
+        a: "Da. Imamo posebne početničke grupe za MMA i grappling, u kojima se radi sporijim tempom i bez teškog sparinga. Većina naših članova je počela bez prethodnog iskustva u borilačkim sportovima.",
+      },
+      {
+        q: "Trenirate li boks?",
+        a: "Nemamo zasebnu boks sekciju, ali udaračke tehnike — boks i kickboks — sastavni su dio MMA treninga. Ako tražiš isključivo boks bez hrvanja i borbe na podu, javi se treneru i reći ćemo ti iskreno odgovaramo li tvom cilju.",
+      },
+      {
+        q: "Postoji li trening samo za žene?",
+        a: "Postoji. Ponedjeljkom, srijedom i petkom od 16:45 do 17:45 vodimo zatvoreni termin jiu-jitse za žene pod vodstvom trenerice Dalile, za sve nivoe iskustva.",
+      },
+      {
+        q: "Koje dane i u koje vrijeme se trenira?",
+        a: "Treninzi se održavaju od ponedjeljka do petka, ujutro od 09:30 i uvečer od 18:00 i 20:00, te subotom od 10:00 do 12:00 (open mat). Cijeli sedmični raspored je na ovoj stranici u sekciji Raspored.",
+      },
+    ],
+    seo: {
+      title: "MMA i grappling klub Sarajevo — treninzi za sve nivoe | OCD Fighters",
+      description:
+        "OCD Fighters — MMA, grappling i BJJ klub u Sarajevu (Nedžarići 7). Treninzi za početnike i takmičare, udaračke tehnike u sklopu MMA-a, program za žene. Glavni trener crni pojas BJJ. Prvi trening besplatan.",
+      keywords: [
+        "MMA Sarajevo",
+        "grappling Sarajevo",
+        "BJJ Sarajevo",
+        "brazilska jiu-jitsa Sarajevo",
+        "borilački klub Sarajevo",
+        "borilačke vještine Sarajevo",
+        "MMA klub Sarajevo",
+        "boks Sarajevo",
+        "kickboks Sarajevo",
+        "hrvanje Sarajevo",
+        "samoodbrana Sarajevo",
+        "trening za žene Sarajevo",
+        "Nedžarići",
+        "Namik Alibašić",
+      ],
     },
     login: {
       title: "Prijava člana",
@@ -160,6 +222,7 @@ const dictionaries = {
     hero: {
       kicker: "Grappling & MMA · Sarajevo",
       title: "OCD Fighters Sarajevo",
+      h1: "MMA and grappling club in Sarajevo",
       subtitle:
         "A club specialised in grappling and MMA, founded in 2026 in Sarajevo. A professional, disciplined and serious training environment for all levels.",
       ctaJoin: "Become a member",
@@ -180,6 +243,7 @@ const dictionaries = {
       body:
         "Grappling and MMA sessions tailored to all levels — from beginners to professional competitors. A modern, fully-equipped gym and elite athletes create an environment where knowledge, experience and a winning mindset are shared every day. Members book slots directly through the member portal.",
       disciplines: ["Grappling", "MMA", "BJJ", "Wrestling", "Conditioning", "Women's training"],
+      more: "Learn more",
     },
     highlights: {
       location: "Location",
@@ -240,6 +304,58 @@ const dictionaries = {
     },
     footer: {
       rights: "All rights reserved.",
+      programs: "Programs",
+      club: "Club",
+    },
+    faq: {
+      title: "Frequently asked questions",
+      otherPrograms: "Other programs",
+    },
+    homeFaq: [
+      {
+        q: "Where can I train MMA and grappling in Sarajevo?",
+        a: "OCD Fighters is at Nedžarići 7 in Sarajevo. We train MMA, grappling and Brazilian jiu-jitsu, in beginner and advanced groups, with morning and evening sessions Monday through Saturday.",
+      },
+      {
+        q: "How much does a martial arts membership in Sarajevo cost?",
+        a: "Our monthly membership is 70 KM for one program (MMA or grappling), 100 KM for both together, and a single drop-in session is 15 KM. Your first session is free.",
+      },
+      {
+        q: "Can I start with no experience at all?",
+        a: "Yes. We run dedicated beginner groups for MMA and grappling, at a slower pace and without hard sparring. Most of our members started with no combat sports background.",
+      },
+      {
+        q: "Do you teach boxing?",
+        a: "We don't run a separate boxing section, but striking — boxing and kickboxing — is a core part of MMA training here. If you want boxing only, with no wrestling or ground work, contact the coach and we'll tell you honestly whether we're the right fit.",
+      },
+      {
+        q: "Is there a women-only session?",
+        a: "There is. Monday, Wednesday and Friday from 16:45 to 17:45 we run a closed women's jiu-jitsu session led by coach Dalila, for all experience levels.",
+      },
+      {
+        q: "What days and times do you train?",
+        a: "Sessions run Monday to Friday, mornings from 09:30 and evenings at 18:00 and 20:00, plus Saturday 10:00–12:00 (open mat). The full weekly schedule is in the Schedule section of this page.",
+      },
+    ],
+    seo: {
+      title: "MMA & grappling club Sarajevo — training for all levels | OCD Fighters",
+      description:
+        "OCD Fighters — MMA, grappling and BJJ club in Sarajevo (Nedžarići 7). Training for beginners and competitors, striking as part of MMA, dedicated women's program. Head coach is a BJJ black belt. First session free.",
+      keywords: [
+        "MMA Sarajevo",
+        "grappling Sarajevo",
+        "BJJ Sarajevo",
+        "Brazilian jiu-jitsu Sarajevo",
+        "martial arts club Sarajevo",
+        "martial arts Sarajevo",
+        "MMA club Sarajevo",
+        "boxing Sarajevo",
+        "kickboxing Sarajevo",
+        "wrestling Sarajevo",
+        "self defence Sarajevo",
+        "women's training Sarajevo",
+        "Nedžarići",
+      ],
     },
     login: {
       title: "Member login",

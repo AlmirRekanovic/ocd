@@ -7,10 +7,18 @@ import { todayISO } from "@/lib/dates";
 import { WEEK, type Level } from "@/lib/timetable";
 import { dayOfWeek } from "@/lib/utils";
 import { whatsappLink } from "@/lib/wa";
+import { getDisciplines } from "@/i18n/disciplines";
+import { clubJsonLd, faqJsonLd, websiteJsonLd } from "@/lib/seo";
 import PublicNav from "@/components/PublicNav";
+import PublicFooter from "@/components/PublicFooter";
+import JsonLd from "@/components/JsonLd";
 import Logo from "@/components/Logo";
 
-export const dynamic = "force-dynamic";
+// Prerendered and refreshed hourly rather than rendered per request. The only
+// time-dependent thing on the page is which day is highlighted as "today", so
+// an hourly rebuild is accurate — and a static page is served far faster,
+// which is itself a ranking factor.
+export const revalidate = 3600;
 
 const LEVEL_STYLE: Record<Level, string> = {
   advanced: "bg-brand/15 text-brand-light",
@@ -25,6 +33,7 @@ export default function LandingPage({ params }: { params: { locale: string } }) 
   const t = getDictionary(locale);
   const todayDow = dayOfWeek(todayISO());
   const whatsappHref = whatsappLink(CLUB.coachPhone, t.contact.whatsappMessage, "387");
+  const disciplines = getDisciplines(locale);
 
   const highlights = [
     { label: t.highlights.location, value: CLUB.address, href: "#location" },
@@ -35,6 +44,13 @@ export default function LandingPage({ params }: { params: { locale: string } }) 
   return (
     <>
       <PublicNav locale={locale} />
+
+      {/* Structured data: tells search engines this is a martial arts gym at
+          these coordinates, with these hours, prices and disciplines. This is
+          what feeds the Google Maps local pack and rich results. */}
+      <JsonLd
+        data={[clubJsonLd(locale), websiteJsonLd(locale), faqJsonLd(t.homeFaq)]}
+      />
 
       <main>
         {/* Hero */}
@@ -51,8 +67,13 @@ export default function LandingPage({ params }: { params: { locale: string } }) 
             <p className="mb-3 text-sm font-bold uppercase tracking-[0.25em] text-brand-light">
               {t.hero.kicker}
             </p>
-            <h1 className="sr-only">{t.hero.title}</h1>
-            <p className="mt-2 max-w-xl text-lg text-zinc-300">{t.hero.subtitle}</p>
+            {/* A real, visible H1 carrying the primary keyword. It used to be
+                sr-only and brand-name only, which wasted the single strongest
+                on-page signal the page has. */}
+            <h1 className="font-display text-3xl font-extrabold leading-tight md:text-5xl">
+              {t.hero.h1}
+            </h1>
+            <p className="mt-4 max-w-xl text-lg text-zinc-300">{t.hero.subtitle}</p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               <Link href={`/${locale}/login`} className="btn-primary">
                 {t.hero.ctaJoin}
@@ -117,6 +138,27 @@ export default function LandingPage({ params }: { params: { locale: string } }) 
                 >
                   {d}
                 </span>
+              ))}
+            </div>
+
+            {/* Links out to the per-discipline pages. Beyond being useful
+                navigation, this is what passes the home page's authority to
+                the pages that target the individual keywords. */}
+            <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {disciplines.map((d) => (
+                <Link
+                  key={d.slug}
+                  href={`/${locale}/${d.slug}`}
+                  className="card group transition-colors hover:border-brand"
+                >
+                  <h3 className="font-display text-lg font-bold text-brand-light">
+                    {d.h1}
+                  </h3>
+                  <p className="mt-2 text-sm text-zinc-400">{d.lede}</p>
+                  <span className="mt-3 inline-block text-sm font-semibold text-zinc-500 group-hover:text-brand-light">
+                    {t.trainingSection.more} →
+                  </span>
+                </Link>
               ))}
             </div>
           </div>
@@ -286,6 +328,25 @@ export default function LandingPage({ params }: { params: { locale: string } }) 
           </div>
         </section>
 
+        {/* FAQ — mirrors the FAQPage structured data. These answer the exact
+            full-sentence questions people type into Google, which is how a
+            page becomes eligible for those long-tail results. */}
+        <section id="faq" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-20">
+          <h2 className="font-display text-3xl font-extrabold md:text-4xl">
+            {t.faq.title}
+          </h2>
+          <dl className="mt-8 grid gap-4 md:grid-cols-2">
+            {t.homeFaq.map((item) => (
+              <div key={item.q} className="card">
+                <dt className="font-display text-lg font-bold text-brand-light">
+                  {item.q}
+                </dt>
+                <dd className="mt-2 text-sm leading-relaxed text-zinc-300">{item.a}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+
         {/* Contact */}
         <section id="contact" className="scroll-mt-20 bg-ink-800/40">
           <div className="mx-auto max-w-6xl px-4 py-20">
@@ -332,27 +393,7 @@ export default function LandingPage({ params }: { params: { locale: string } }) 
         </section>
       </main>
 
-      <footer className="border-t border-ink-700 py-8">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 text-sm text-zinc-500">
-          <span>
-            © {new Date().getFullYear()} OCD Fighters. {t.footer.rights}
-          </span>
-          <span className="flex flex-wrap gap-4">
-            <span>{CLUB.address}</span>
-            <a href={`tel:${CLUB.coachPhone}`} className="hover:text-zinc-300">
-              {CLUB.coachPhoneDisplay}
-            </a>
-            <a
-              href={CLUB.instagramUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-zinc-300"
-            >
-              {CLUB.instagramHandle}
-            </a>
-          </span>
-        </div>
-      </footer>
+      <PublicFooter locale={locale} />
 
       {/* Floating WhatsApp button */}
       <a

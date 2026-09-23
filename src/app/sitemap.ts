@@ -1,11 +1,45 @@
 import type { MetadataRoute } from "next";
+import { locales } from "@/i18n/config";
+import { disciplineKeys, slugForLocale } from "@/i18n/disciplines";
+import { SITE_URL } from "@/lib/seo";
 
-const BASE = "https://ocdmma.ba";
-
+/**
+ * Sitemap for the public site.
+ *
+ * Built from the same locale and discipline definitions the routes use, so a
+ * new discipline page appears here automatically rather than being silently
+ * left out — an unlisted page is a page that may never get crawled.
+ *
+ * Each entry declares its translations via `alternates.languages`, which is
+ * the sitemap equivalent of hreflang and keeps the Bosnian and English
+ * versions from competing with each other in search results.
+ */
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
-  return [
-    { url: `${BASE}/bs`, lastModified: now, changeFrequency: "weekly", priority: 1 },
-    { url: `${BASE}/en`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
-  ];
+
+  const homes = locales.map((locale) => ({
+    url: `${SITE_URL}/${locale}`,
+    lastModified: now,
+    changeFrequency: "weekly" as const,
+    priority: locale === "bs" ? 1 : 0.8,
+    alternates: {
+      languages: Object.fromEntries(locales.map((l) => [l, `${SITE_URL}/${l}`])),
+    },
+  }));
+
+  const disciplinePages = locales.flatMap((locale) =>
+    disciplineKeys.map((key) => ({
+      url: `${SITE_URL}/${locale}/${slugForLocale(key, locale)}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: locale === "bs" ? 0.9 : 0.7,
+      alternates: {
+        languages: Object.fromEntries(
+          locales.map((l) => [l, `${SITE_URL}/${l}/${slugForLocale(key, l)}`]),
+        ),
+      },
+    })),
+  );
+
+  return [...homes, ...disciplinePages];
 }

@@ -4,10 +4,26 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { Locale } from "@/i18n/config";
 
-export default function LanguageSwitcher({ current }: { current: Locale }) {
+/**
+ * Language toggle.
+ *
+ * `hrefs` lets a page state its own translated URLs. That matters on the
+ * discipline pages, where the slug itself is translated
+ * (/bs/brazilska-jiu-jitsa-sarajevo ↔ /en/brazilian-jiu-jitsu-sarajevo) —
+ * swapping only the locale segment would land on a 404, and a language
+ * switcher that breaks is both a ranking and a usability problem.
+ */
+export default function LanguageSwitcher({
+  current,
+  hrefs,
+}: {
+  current: Locale;
+  hrefs?: Partial<Record<Locale, string>>;
+}) {
   const pathname = usePathname();
 
   function swap(to: Locale): string {
+    if (hrefs?.[to]) return hrefs[to] as string;
     if (!pathname) return `/${to}`;
     const parts = pathname.split("/");
     parts[1] = to; // replace the locale segment
@@ -20,6 +36,7 @@ export default function LanguageSwitcher({ current }: { current: Locale }) {
         <Link
           key={loc}
           href={swap(loc)}
+          hrefLang={loc}
           className={`rounded px-2 py-1 uppercase transition-colors ${
             current === loc
               ? "bg-brand text-white"

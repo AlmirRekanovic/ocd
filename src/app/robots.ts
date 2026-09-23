@@ -1,6 +1,5 @@
 import type { MetadataRoute } from "next";
-
-const BASE = "https://ocdmma.ba";
+import { SITE_URL } from "@/lib/seo";
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -8,9 +7,12 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
       // Private / non-content areas — keep them out of search results.
-      disallow: ["/admin", "/bs/member", "/en/member", "/api/"],
+      // `/admin` also carries a noindex header from its own layout, since
+      // robots.txt only asks crawlers not to *fetch*, not to omit from the
+      // index if they find the URL linked elsewhere.
+      disallow: ["/admin", "/bs/member", "/en/member", "/bs/login", "/en/login", "/api/"],
     },
-    sitemap: `${BASE}/sitemap.xml`,
-    host: BASE,
+    sitemap: `${SITE_URL}/sitemap.xml`,
+    host: SITE_URL,
   };
 }
