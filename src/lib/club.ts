@@ -3,8 +3,19 @@
 // Google Business Profile — Google cross-checks name/address/phone ("NAP")
 // between the two, and matching them is what earns the Maps listing trust.
 
-export const LAT = 43.83629;
-export const LNG = 18.333193;
+// Taken from the Google Business Profile listing itself, so the coordinates in
+// our structured data are the exact ones Google already holds for the club.
+export const LAT = 43.8363107;
+export const LNG = 18.3331464;
+
+/**
+ * The listing's CID — Google's stable identifier for this place.
+ *
+ * Preferred over a share.google short link: it never expires, carries no
+ * tracking parameters, and resolves straight to the profile.
+ * Feature ID: 0x4758cb9151116a61:0x9f3882182a63257
+ */
+const MAPS_CID = "717066443189269079";
 
 export const CLUB = {
   // `name` must match the Google Business Profile listing character for
@@ -29,9 +40,14 @@ export const CLUB = {
   // Google Business Profile listing. The "Otvori u Google Maps" button and the
   // JSON-LD `hasMap`/`sameAs` all point here, which is what ties the site and
   // the Maps listing together as one entity.
-  mapsUrl: "https://share.google/l5dGm7f5Hmiv5N3VS",
+  mapsUrl: `https://www.google.com/maps?cid=${MAPS_CID}`,
   directionsUrl: `https://www.google.com/maps/dir/?api=1&destination=${LAT},${LNG}`,
-  mapEmbedUrl: `https://maps.google.com/maps?q=${LAT},${LNG}&z=16&output=embed`,
+  // Embedded by business name rather than by bare coordinates, so the map
+  // shows the actual listing — name, photos and reviews — instead of an
+  // anonymous pin. `ll` keeps it centred correctly regardless.
+  mapEmbedUrl: `https://maps.google.com/maps?q=${encodeURIComponent(
+    "OCD FIGHTERS MMA & GRAPPLING CLUB, Nedžarići 7, Sarajevo",
+  )}&ll=${LAT},${LNG}&z=17&output=embed`,
 };
 
 /** Prices in KM. Labels live in the i18n dictionaries (pricing.plans). */
