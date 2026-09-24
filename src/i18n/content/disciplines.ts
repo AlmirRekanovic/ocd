@@ -285,6 +285,7 @@ export const bs: Record<DisciplineKey, PageContent> = {
   beginners: {
     slug: "borilacki-klub-za-pocetnike-sarajevo",
     navLabel: "Za početnike",
+    inNav: false,
     metaTitle: "Borilački klub za početnike Sarajevo — prvi trening besplatan | OCD Fighters",
     metaDescription:
       "Počni trenirati borilačke vještine u Sarajevu bez ikakvog iskustva. Početničke grupe za MMA i grappling, Nedžarići 7. Prvi trening je besplatan, bez opreme i bez obaveze.",
@@ -604,6 +605,7 @@ export const en: Record<DisciplineKey, PageContent> = {
   beginners: {
     slug: "martial-arts-for-beginners-sarajevo",
     navLabel: "Beginners",
+    inNav: false,
     metaTitle: "Martial arts for beginners Sarajevo — first session free | OCD Fighters",
     metaDescription:
       "Start training martial arts in Sarajevo with no experience. Beginner groups for MMA and grappling at Nedžarići 7. First session free, no gear and no obligation.",

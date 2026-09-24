@@ -17,7 +17,7 @@ export const bs: Record<InfoKey, PageContent> = {
   pricing: {
     slug: "cijene-treninga-sarajevo",
     navLabel: "Cijene",
-    inNav: false,
+    inNav: true,
     blocks: ["pricing"],
     metaTitle: "Cijene treninga — koliko košta MMA i grappling u Sarajevu | OCD Fighters",
     metaDescription:
@@ -90,7 +90,7 @@ export const bs: Record<InfoKey, PageContent> = {
   schedule: {
     slug: "raspored-treninga-sarajevo",
     navLabel: "Raspored",
-    inNav: false,
+    inNav: true,
     blocks: ["timetable"],
     metaTitle: "Raspored treninga — MMA, grappling i BJJ u Sarajevu | OCD Fighters",
     metaDescription:
@@ -159,7 +159,7 @@ export const bs: Record<InfoKey, PageContent> = {
   location: {
     slug: "borilacki-klub-nedzarici",
     navLabel: "Lokacija",
-    inNav: false,
+    inNav: true,
     blocks: ["map"],
     metaTitle: "Borilački klub u Nedžarićima — MMA i grappling sala | OCD Fighters",
     metaDescription:
@@ -366,7 +366,7 @@ export const en: Record<InfoKey, PageContent> = {
   pricing: {
     slug: "training-prices-sarajevo",
     navLabel: "Prices",
-    inNav: false,
+    inNav: true,
     blocks: ["pricing"],
     metaTitle: "Prices — how much MMA and grappling training costs in Sarajevo | OCD Fighters",
     metaDescription:
@@ -434,7 +434,7 @@ export const en: Record<InfoKey, PageContent> = {
   schedule: {
     slug: "training-schedule-sarajevo",
     navLabel: "Schedule",
-    inNav: false,
+    inNav: true,
     blocks: ["timetable"],
     metaTitle: "Training schedule — MMA, grappling and BJJ in Sarajevo | OCD Fighters",
     metaDescription:
@@ -498,7 +498,7 @@ export const en: Record<InfoKey, PageContent> = {
   location: {
     slug: "martial-arts-gym-nedzarici-sarajevo",
     navLabel: "Location",
-    inNav: false,
+    inNav: true,
     blocks: ["map"],
     metaTitle: "Martial arts gym in Nedžarići, Sarajevo — MMA and grappling | OCD Fighters",
     metaDescription:

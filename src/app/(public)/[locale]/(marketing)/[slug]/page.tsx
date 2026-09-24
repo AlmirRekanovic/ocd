@@ -279,9 +279,9 @@ export default function ContentPage({
             >
               {t.schedule.cta}
             </a>
-            <a href={`/${locale}#schedule`} className="btn-ghost">
+            <Link href={`/${locale}#schedule`} className="btn-ghost">
               {t.nav.schedule}
-            </a>
+            </Link>
           </div>
 
           {p.sections.map((s) => (

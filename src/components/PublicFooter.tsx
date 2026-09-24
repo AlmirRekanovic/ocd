@@ -43,24 +43,24 @@ export default function PublicFooter({ locale }: { locale: Locale }) {
             </h2>
             <ul className="mt-3 space-y-2 text-sm">
               <li>
-                <a href={`/${locale}#about`} className="text-zinc-400 hover:text-brand-light">
+                <Link href={`/${locale}#about`} className="text-zinc-400 hover:text-brand-light">
                   {t.nav.about}
-                </a>
+                </Link>
               </li>
               <li>
-                <a href={`/${locale}#schedule`} className="text-zinc-400 hover:text-brand-light">
+                <Link href={`/${locale}#schedule`} className="text-zinc-400 hover:text-brand-light">
                   {t.nav.schedule}
-                </a>
+                </Link>
               </li>
               <li>
-                <a href={`/${locale}#pricing`} className="text-zinc-400 hover:text-brand-light">
+                <Link href={`/${locale}#pricing`} className="text-zinc-400 hover:text-brand-light">
                   {t.nav.pricing}
-                </a>
+                </Link>
               </li>
               <li>
-                <a href={`/${locale}#location`} className="text-zinc-400 hover:text-brand-light">
+                <Link href={`/${locale}#location`} className="text-zinc-400 hover:text-brand-light">
                   {t.nav.location}
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
