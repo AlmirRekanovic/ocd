@@ -11,7 +11,7 @@ export default async function AdminLoginPage() {
     <main className="grid min-h-screen place-items-center px-4">
       <div className="w-full max-w-sm">
         <div className="mb-8 flex items-center justify-center">
-          <Logo className="h-14 w-auto" />
+          <Logo className="h-14 w-auto" sizes="56px" />
         </div>
         <div className="card">
           <h1 className="font-display text-2xl font-extrabold">Admin prijava</h1>

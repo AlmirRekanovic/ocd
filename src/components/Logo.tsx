@@ -1,15 +1,29 @@
 "use client";
 
-/* eslint-disable @next/next/no-img-element */
+import Image from "next/image";
 import { useState } from "react";
 
 /**
- * Club logo. Uses the artwork at `public/logo.png` (the blue puzzle-style
- * "OCD FIGHTERS" mark). If that file is missing it gracefully falls back to a
- * styled blue/chrome wordmark, so the UI never shows a broken image.
- * Control the size via `className`, e.g. "h-9 w-auto" or "h-32 w-auto".
+ * Club logo — the blue "OCD FIGHTERS" mark at `public/logo.png`.
+ *
+ * Uses next/image so the platform serves a resized WebP/AVIF instead of the
+ * source PNG: the mark is drawn anywhere from 40px (nav) to 256px (hero), and
+ * shipping one large bitmap to every one of those slots is wasted bandwidth on
+ * every page load. Pass `sizes` matching the rendered width, and `priority` on
+ * the hero instance, which is the largest-contentful-paint element.
+ *
+ * If the file is ever missing it falls back to a styled wordmark, so the UI
+ * never shows a broken image.
  */
-export default function Logo({ className = "h-9 w-auto" }: { className?: string }) {
+export default function Logo({
+  className = "h-9 w-auto",
+  sizes = "64px",
+  priority = false,
+}: {
+  className?: string;
+  sizes?: string;
+  priority?: boolean;
+}) {
   const [failed, setFailed] = useState(false);
 
   if (failed) {
@@ -27,9 +41,13 @@ export default function Logo({ className = "h-9 w-auto" }: { className?: string 
   }
 
   return (
-    <img
+    <Image
       src="/logo.png"
-      alt="OCD Fighters"
+      alt="OCD Fighters — MMA i grappling klub Sarajevo"
+      width={512}
+      height={512}
+      sizes={sizes}
+      priority={priority}
       className={className}
       onError={() => setFailed(true)}
     />

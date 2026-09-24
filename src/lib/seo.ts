@@ -116,8 +116,8 @@ export function clubJsonLd(locale: Locale) {
     description: bs ? DESCRIPTION_BS : DESCRIPTION_EN,
     url: `${SITE_URL}/${locale}`,
     telephone: CLUB.coachPhone,
-    image: `${SITE_URL}/logo.png`,
-    logo: `${SITE_URL}/logo.png`,
+    image: `${SITE_URL}/og.png`,
+    logo: `${SITE_URL}/icon-512.png`,
     foundingDate: String(CLUB.foundingYear),
     sport: bs ? SPORTS_BS : SPORTS_EN,
     currenciesAccepted: "BAM",
@@ -136,7 +136,9 @@ export function clubJsonLd(locale: Locale) {
     },
     hasMap: CLUB.mapsUrl,
     openingHoursSpecification: openingHours(),
-    sameAs: [CLUB.instagramUrl],
+    // Profiles that represent this same club elsewhere. Listing the Google
+    // Business Profile here helps Google connect the site to the Maps entry.
+    sameAs: [CLUB.instagramUrl, CLUB.mapsUrl],
     employee: [
       {
         "@type": "Person",

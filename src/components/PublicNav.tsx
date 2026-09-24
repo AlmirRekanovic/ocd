@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getDictionary } from "@/i18n/dictionaries";
-import { getNavPages } from "@/i18n/pages";
+import { getNavPages, pageKeys, slugForLocale } from "@/i18n/pages";
 import type { Locale } from "@/i18n/config";
 import LanguageSwitcher from "./LanguageSwitcher";
 import NavAuth from "./NavAuth";
@@ -13,13 +13,13 @@ import Logo from "./Logo";
  * opt every public page out of static rendering. The logged-in state is
  * handled client-side by <NavAuth>.
  */
-export default function PublicNav({
-  locale,
-  hrefs,
-}: {
-  locale: Locale;
-  hrefs?: Partial<Record<Locale, string>>;
-}) {
+/** Slug pairs for the language switcher, built once from the registry. */
+const SLUG_MAP = pageKeys.map((key) => ({
+  bs: slugForLocale(key, "bs"),
+  en: slugForLocale(key, "en"),
+}));
+
+export default function PublicNav({ locale }: { locale: Locale }) {
   const t = getDictionary(locale).nav;
   const disciplines = getNavPages(locale);
 
@@ -27,7 +27,7 @@ export default function PublicNav({
     <header className="sticky top-0 z-40 border-b border-ink-700 bg-ink-900/90 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
         <Link href={`/${locale}`} className="flex items-center" aria-label={t.home}>
-          <Logo className="h-10 w-auto" />
+          <Logo className="h-10 w-auto" sizes="40px" />
         </Link>
 
         {/* The discipline links are real <a>s to real pages, not in-page
@@ -55,7 +55,7 @@ export default function PublicNav({
         </nav>
 
         <div className="flex items-center gap-3">
-          <LanguageSwitcher current={locale} hrefs={hrefs} />
+          <LanguageSwitcher current={locale} slugMap={SLUG_MAP} />
           <NavAuth
             locale={locale}
             labels={{ login: t.login, memberArea: t.memberArea, logout: t.logout }}

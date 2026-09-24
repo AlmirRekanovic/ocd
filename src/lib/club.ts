@@ -26,7 +26,10 @@ export const CLUB = {
   womensCoachName: "Dalila",
   coachPhone: "+38761023883",
   coachPhoneDisplay: "+387 61 023 883",
-  mapsUrl: "https://maps.app.goo.gl/NC3F9tm6oqp9ZnMn9",
+  // Google Business Profile listing. The "Otvori u Google Maps" button and the
+  // JSON-LD `hasMap`/`sameAs` all point here, which is what ties the site and
+  // the Maps listing together as one entity.
+  mapsUrl: "https://share.google/l5dGm7f5Hmiv5N3VS",
   directionsUrl: `https://www.google.com/maps/dir/?api=1&destination=${LAT},${LNG}`,
   mapEmbedUrl: `https://maps.google.com/maps?q=${LAT},${LNG}&z=16&output=embed`,
 };

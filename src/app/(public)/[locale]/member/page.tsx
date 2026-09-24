@@ -98,7 +98,7 @@ export default async function MemberPage({
       <header className="border-b border-ink-700 bg-ink-900">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
           <Link href={`/${locale}`} className="flex items-center">
-            <Logo className="h-10 w-auto" />
+            <Logo className="h-10 w-auto" sizes="40px" />
           </Link>
           <div className="flex items-center gap-3">
             <LanguageSwitcher current={locale} />

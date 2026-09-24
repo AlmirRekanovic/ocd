@@ -33,7 +33,17 @@ export function generateMetadata({ params }: { params: { locale: string } }): Me
     description: seo.description,
     keywords: seo.keywords,
     applicationName: CLUB.shortName,
-    icons: { icon: "/logo.png", apple: "/logo.png" },
+    // Purpose-sized icons rather than the full logo — a browser tab needs
+    // ~32px, and serving the full artwork for it wastes a request on every
+    // page load.
+    icons: {
+      icon: [
+        { url: "/favicon.png", sizes: "48x48", type: "image/png" },
+        { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+        { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
+      ],
+      apple: [{ url: "/icon-180.png", sizes: "180x180", type: "image/png" }],
+    },
     alternates: {
       canonical: `/${locale}`,
       languages: { bs: "/bs", en: "/en", "x-default": "/bs" },
@@ -46,13 +56,13 @@ export function generateMetadata({ params }: { params: { locale: string } }): Me
       alternateLocale: locale === "bs" ? "en_US" : "bs_BA",
       title: seo.title,
       description: seo.description,
-      images: ["/logo.png"],
+      images: [{ url: "/og.png", width: 1200, height: 630, alt: CLUB.name }],
     },
     twitter: {
       card: "summary_large_image",
       title: seo.title,
       description: seo.description,
-      images: ["/logo.png"],
+      images: [{ url: "/og.png", width: 1200, height: 630, alt: CLUB.name }],
     },
     robots: {
       index: true,

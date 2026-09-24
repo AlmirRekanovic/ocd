@@ -17,8 +17,6 @@ import { WEEK, type Level } from "@/lib/timetable";
 import { dayOfWeek } from "@/lib/utils";
 import { whatsappLink } from "@/lib/wa";
 import { breadcrumbJsonLd, courseJsonLd, faqJsonLd, SITE_URL } from "@/lib/seo";
-import PublicNav from "@/components/PublicNav";
-import PublicFooter from "@/components/PublicFooter";
 import JsonLd from "@/components/JsonLd";
 
 // Refreshed hourly so the "today" marker on the schedule block stays right,
@@ -65,7 +63,7 @@ export function generateMetadata({
       locale: locale === "bs" ? "bs_BA" : "en_US",
       title: p.metaTitle,
       description: p.metaDescription,
-      images: ["/logo.png"],
+      images: [{ url: "/og.png", width: 1200, height: 630, alt: CLUB.name }],
     },
     twitter: {
       card: "summary_large_image",
@@ -236,14 +234,6 @@ export default function ContentPage({
 
   return (
     <>
-      <PublicNav
-        locale={locale}
-        hrefs={{
-          bs: `/bs/${slugForLocale(key, "bs")}`,
-          en: `/en/${slugForLocale(key, "en")}`,
-        }}
-      />
-
       <JsonLd
         data={[
           courseJsonLd({
@@ -375,17 +365,7 @@ export default function ContentPage({
         </article>
       </main>
 
-      <PublicFooter locale={locale} />
 
-      <a
-        href={whatsappHref}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label={t.contact.whatsapp}
-        className="btn fixed bottom-5 right-5 z-50 rounded-full bg-[#25D366] px-5 py-3 text-black shadow-lg shadow-black/40 hover:bg-[#1ebe5b]"
-      >
-        {t.contact.whatsapp}
-      </a>
     </>
   );
 }

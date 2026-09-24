@@ -9,8 +9,6 @@ import { dayOfWeek } from "@/lib/utils";
 import { whatsappLink } from "@/lib/wa";
 import { getNavPages } from "@/i18n/pages";
 import { clubJsonLd, faqJsonLd, websiteJsonLd } from "@/lib/seo";
-import PublicNav from "@/components/PublicNav";
-import PublicFooter from "@/components/PublicFooter";
 import JsonLd from "@/components/JsonLd";
 import Logo from "@/components/Logo";
 
@@ -43,8 +41,6 @@ export default function LandingPage({ params }: { params: { locale: string } }) 
 
   return (
     <>
-      <PublicNav locale={locale} />
-
       {/* Structured data: tells search engines this is a martial arts gym at
           these coordinates, with these hours, prices and disciplines. This is
           what feeds the Google Maps local pack and rich results. */}
@@ -63,7 +59,11 @@ export default function LandingPage({ params }: { params: { locale: string } }) 
             }}
           />
           <div className="relative mx-auto flex max-w-6xl flex-col items-center px-4 py-24 text-center md:py-32">
-            <Logo className="mb-10 h-40 w-auto drop-shadow-[0_0_45px_rgba(46,114,230,0.45)] sm:h-52 md:h-64" />
+            <Logo
+              className="mb-10 h-40 w-auto drop-shadow-[0_0_45px_rgba(46,114,230,0.45)] sm:h-52 md:h-64"
+              sizes="(min-width: 768px) 256px, (min-width: 640px) 208px, 160px"
+              priority
+            />
             <p className="mb-3 text-sm font-bold uppercase tracking-[0.25em] text-brand-light">
               {t.hero.kicker}
             </p>
@@ -393,18 +393,7 @@ export default function LandingPage({ params }: { params: { locale: string } }) 
         </section>
       </main>
 
-      <PublicFooter locale={locale} />
 
-      {/* Floating WhatsApp button */}
-      <a
-        href={whatsappHref}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label={t.contact.whatsapp}
-        className="btn fixed bottom-5 right-5 z-50 rounded-full bg-[#25D366] px-5 py-3 text-black shadow-lg shadow-black/40 hover:bg-[#1ebe5b]"
-      >
-        {t.contact.whatsapp}
-      </a>
     </>
   );
 }

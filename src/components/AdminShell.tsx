@@ -24,7 +24,7 @@ export default function AdminShell({
     <div className="min-h-screen md:flex">
       <aside className="border-b border-ink-700 bg-ink-900 md:w-60 md:shrink-0 md:border-b-0 md:border-r">
         <div className="flex items-center gap-3 px-4 py-4">
-          <Logo className="h-9 w-auto" />
+          <Logo className="h-9 w-auto" sizes="36px" />
           <div className="text-xs text-zinc-500">Admin panel</div>
         </div>
         <nav className="flex flex-wrap gap-1 px-2 pb-3 md:flex-col">

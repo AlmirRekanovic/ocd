@@ -2,37 +2,49 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { Locale } from "@/i18n/config";
+import { locales, type Locale } from "@/i18n/config";
+
+/** One page's slug in each language, e.g. { bs: "cijene-…", en: "training-…" }. */
+export type SlugMap = Record<Locale, string>;
 
 /**
  * Language toggle.
  *
- * `hrefs` lets a page state its own translated URLs. That matters on the
- * discipline pages, where the slug itself is translated
- * (/bs/brazilska-jiu-jitsa-sarajevo ↔ /en/brazilian-jiu-jitsu-sarajevo) —
- * swapping only the locale segment would land on a 404, and a language
- * switcher that breaks is both a ranking and a usability problem.
+ * Slugs are translated (/bs/brazilska-jiu-jitsa-sarajevo ↔
+ * /en/brazilian-jiu-jitsu-sarajevo), so swapping only the locale segment would
+ * land on a 404. `slugMap` carries the pairs, letting this work from a layout
+ * without every page having to pass its own URLs down.
  */
 export default function LanguageSwitcher({
   current,
-  hrefs,
+  slugMap = [],
 }: {
   current: Locale;
-  hrefs?: Partial<Record<Locale, string>>;
+  slugMap?: SlugMap[];
 }) {
   const pathname = usePathname();
 
   function swap(to: Locale): string {
-    if (hrefs?.[to]) return hrefs[to] as string;
     if (!pathname) return `/${to}`;
+
     const parts = pathname.split("/");
-    parts[1] = to; // replace the locale segment
+    const slug = parts[2];
+
+    // Translate the slug when this is one of the content pages. Routes with no
+    // entry (login, member) share a slug across languages, so they pass through
+    // with only the locale segment replaced.
+    if (slug) {
+      const match = slugMap.find((m) => m[current] === slug);
+      if (match) parts[2] = match[to];
+    }
+
+    parts[1] = to;
     return parts.join("/") || `/${to}`;
   }
 
   return (
     <div className="flex items-center gap-1 text-xs font-semibold">
-      {(["bs", "en"] as const).map((loc) => (
+      {locales.map((loc) => (
         <Link
           key={loc}
           href={swap(loc)}
